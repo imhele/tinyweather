@@ -3,20 +3,36 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "test": "jest",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "lint": "tslint --project . -c tslint.yml"
   },
   "dependencies": {
     "react": "16.8.3",
-    "react-native": "0.59.5"
+    "react-native": "0.59.5",
+    "react-navigation": "^3.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/runtime": "^7.4.3",
+    "@types/react": "^16.8.14",
+    "@types/react-native": "^0.57.47",
     "babel-jest": "^24.7.1",
     "jest": "^24.7.1",
+    "lint-staged": "^7.2.2",
     "metro-react-native-babel-preset": "^0.53.1",
-    "react-test-renderer": "16.8.3"
+    "react-native-typescript-transformer": "^1.2.12",
+    "react-test-renderer": "16.8.3",
+    "tslint": "^5.12.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.4.4"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "tslint --fix",
+      "git add"
+    ]
   },
   "jest": {
     "preset": "react-native"
