@@ -4,9 +4,11 @@ import {
   NavigationBackActionPayload,
   NavigationContainerComponent,
   NavigationInitActionPayload,
+  NavigationNavigateAction,
   NavigationNavigateActionPayload,
   NavigationParams,
   NavigationSetParamsActionPayload,
+  StackActions,
 } from 'react-navigation';
 import Navigator from './pages';
 
@@ -41,9 +43,24 @@ export function setParams(options: NavigationSetParamsActionPayload) {
   return WrappedContainer.ref.dispatch(NavigationActions.setParams(options));
 }
 
-export function push(routeName: string, params?: NavigationParams) {
+export function push(
+  routeName: string,
+  params?: NavigationParams,
+  action?: NavigationNavigateAction,
+) {
   if (!WrappedContainer.ref) return;
-  return WrappedContainer.ref.dispatch(NavigationActions.navigate({ routeName, params }));
+  return WrappedContainer.ref.dispatch(StackActions.push({ action, routeName, params }));
 }
+
+export function replace(
+  routeName: string,
+  params?: NavigationParams,
+  action?: NavigationNavigateAction,
+) {
+  if (!WrappedContainer.ref) return;
+  return WrappedContainer.ref.dispatch(StackActions.replace({ action, routeName, params }));
+}
+
+export { NavigationActions };
 
 export default WrappedContainer;
