@@ -1,15 +1,23 @@
+import config from '@/config';
 import zhCN from '@/locales/zh-CN';
-import reload from '@/components/reload';
 import template from 'lodash/template';
 import DeviceInfo from 'react-native-device-info';
-import { DEFAULT, LocaleType, locales } from './consts';
+import { LocaleType, locales } from './consts';
 
 export * from './consts';
 
-export function getDeviceLocale(): LocaleType {
-  const locale = DeviceInfo.getDeviceLocale();
+export function matchLocale(locale?: any): LocaleType {
+  if (typeof locale !== 'string') return config.intl.default || 'zh-CN';
   const res = Object.entries(locales).find(l => l[1].match(locale)) as [LocaleType, any];
-  return res ? res[0] : 'en-US';
+  return res ? res[0] : config.intl.default || 'zh-CN';
+}
+
+export function getDeviceLocale(): LocaleType {
+  return matchLocale(DeviceInfo.getDeviceLocale());
+}
+
+export function getLocale() {
+  return format.locale;
 }
 
 type Format = (<T = string>(
@@ -18,27 +26,17 @@ type Format = (<T = string>(
 ) => T | string) & { locale: LocaleType };
 
 export const format: Format = (id, values) => {
-  let msg = locales[format.locale].locale[id] as any;
+  let msg: any = locales[format.locale].locale[id];
   if (msg === void 0) {
     if (__DEV__) {
-      console.error(`[intl] Get locale text of \`${id}\` failed.`);
+      console.error(`[intl] Get '${format.locale}' locale text of \`${id}\` failed.`);
     }
     return id;
   }
-  msg = msg === DEFAULT ? id : msg;
+  msg = msg === 0 ? id : msg;
   return values ? template(msg)(values) : msg;
 };
 
-format.locale = getDeviceLocale();
-
-export function getLocale() {
-  return format.locale;
-}
-
-export function setLocale(locale: LocaleType, cbk?: () => void) {
-  // TODO: Persistence
-  format.locale = locale;
-  reload(cbk);
-}
+format.locale = matchLocale();
 
 export default format;

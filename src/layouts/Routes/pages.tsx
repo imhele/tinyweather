@@ -1,6 +1,8 @@
+import Wrapper from '@/components/Wrapper';
 import { AnyComponent } from '@/utils/types';
-import home from '@/pages/home';
-import mine from '@/pages/mine';
+import HomePage from '@/pages/home';
+import MinePage from '@/pages/mine';
+import React from 'react';
 import {
   createStackNavigator,
   createBottomTabNavigator,
@@ -8,20 +10,37 @@ import {
 } from 'react-navigation';
 
 const CommonPages: { [K: string]: AnyComponent } = {};
+const [home, mine] = [HomePage, MinePage].map(
+  (Page): React.FC => ({ children, ...props }) => (
+    <Wrapper {...props}>
+      <Page>{children}</Page>
+    </Wrapper>
+  ),
+);
 
-const hometab = createStackNavigator({
-  ...CommonPages,
-  home,
-});
+const hometab = createStackNavigator(
+  {
+    ...CommonPages,
+    home,
+  },
+  {
+    initialRouteName: 'home',
+  },
+);
 
 hometab.navigationOptions = {
   title: '挑食',
 } as NavigationTabScreenOptions;
 
-const usertab = createStackNavigator({
-  ...CommonPages,
-  mine,
-});
+const usertab = createStackNavigator(
+  {
+    ...CommonPages,
+    mine,
+  },
+  {
+    initialRouteName: 'mine',
+  },
+);
 
 const Root = createBottomTabNavigator(
   {
