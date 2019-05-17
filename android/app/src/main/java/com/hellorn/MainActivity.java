@@ -1,4 +1,4 @@
-package com.hellorn;
+package com.chosyeat;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

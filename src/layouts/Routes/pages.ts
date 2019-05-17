@@ -1,5 +1,6 @@
 import { AnyComponent } from '@/utils/types';
 import home from '@/pages/home';
+import mine from '@/pages/mine';
 import {
   createStackNavigator,
   createBottomTabNavigator,
@@ -19,6 +20,7 @@ hometab.navigationOptions = {
 
 const usertab = createStackNavigator({
   ...CommonPages,
+  mine,
 });
 
 const Root = createBottomTabNavigator(

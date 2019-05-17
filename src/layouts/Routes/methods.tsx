@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   createAppContainer,
   NavigationActions,
@@ -14,7 +15,7 @@ import Navigator from './pages';
 
 const Container = createAppContainer(Navigator);
 
-const WrappedContainer: React.FC & { ref?: NavigationContainerComponent | null } = ({
+export const WrappedContainer: React.FC & { ref?: NavigationContainerComponent | null } = ({
   children,
   ...props
 }) => (
@@ -62,5 +63,3 @@ export function replace(
 }
 
 export { NavigationActions };
-
-export default WrappedContainer;
