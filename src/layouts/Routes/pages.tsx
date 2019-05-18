@@ -8,6 +8,7 @@ import {
   createBottomTabNavigator,
   NavigationTabScreenOptions,
 } from 'react-navigation';
+import { setParams } from './methods';
 
 const CommonPages: { [K: string]: AnyComponent } = {};
 const [home, mine] = [HomePage, MinePage].map(
@@ -28,9 +29,9 @@ const hometab = createStackNavigator(
   },
 );
 
-hometab.navigationOptions = {
+hometab.navigationOptions = () => ({
   title: '挑食',
-} as NavigationTabScreenOptions;
+});
 
 const usertab = createStackNavigator(
   {

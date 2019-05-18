@@ -1,3 +1,7 @@
+import { IdAsMsg } from '@/components/intl/consts';
+import zhCNLang from '@/locales/zh-CN/lang';
+
 export default {
-  挑食: 0,
+  ...zhCNLang,
+  挑食: IdAsMsg,
 };

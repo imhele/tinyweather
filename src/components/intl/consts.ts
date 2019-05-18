@@ -1,16 +1,23 @@
 import zhCN from '@/locales/zh-CN';
 import enUS from '@/locales/en-US';
+import { TemplateExecutor } from 'lodash';
 
-export const UpperCaseLang: LocaleType[] = ['en-US'];
+export const IdAsMsg: string = {} as any;
+
+type TemplateCache = { [K in keyof typeof zhCN]?: TemplateExecutor }
 
 export const locales = {
   'zh-CN': {
+    data: zhCN,
     match: (s: string) => /zh/.test(s),
-    locale: zhCN,
+    template: {} as TemplateCache,
+    upperCase: false,
   },
   'en-US': {
+    data: enUS,
     match: (s: string) => /en/.test(s),
-    locale: enUS,
+    template: {} as TemplateCache,
+    upperCase: true,
   },
 };
 
