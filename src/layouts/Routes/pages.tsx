@@ -2,7 +2,7 @@ import Wrapper from '@/components/Wrapper';
 import intl, { getLocale } from '@/components/intl';
 import HomePage from '@/pages/home';
 import MinePage from '@/pages/mine';
-import { AnyComponent } from '@/utils/types';
+import { AnyComponent, FCN } from '@/utils/types';
 import React from 'react';
 import {
   createStackNavigator,
@@ -15,21 +15,24 @@ const CommonPages: { [K: string]: AnyComponent } = {};
 const initialRouteParams = {
   locale: getLocale(),
 };
-const [home, mine] = [HomePage, MinePage].map(
-  (Page): React.FC => ({ children, ...props }) => (
+const [home, mine] = [HomePage, MinePage].map((Page: FCN) => {
+  const Wrapped: FCN = ({ children, ...props }) => (
     <Wrapper {...props}>
       <Page>{children}</Page>
     </Wrapper>
-  ),
-);
+  );
+  Wrapped.navigationOptions = Page.navigationOptions;
+  return Wrapped;
+});
 
 /**
  ** ****************************
  ** `Home` tab - stack navigator
  ** ****************************
  */
-const hometabConfig: NavigationScreenConfig<NavigationScreenOptions> = () => ({
+const hometabConfig: NavigationScreenConfig<NavigationScreenOptions> = ({ navigationOptions }) => ({
   title: intl.upper('挑食'),
+  ...navigationOptions,
 });
 
 const hometab = createStackNavigator(
@@ -51,8 +54,9 @@ hometab.navigationOptions = hometabConfig;
  ** `User` tab - stack navigator
  ** ****************************
  */
-const usertabConfig: NavigationScreenConfig<NavigationScreenOptions> = () => ({
+const usertabConfig: NavigationScreenConfig<NavigationScreenOptions> = ({ navigationOptions }) => ({
   title: intl.upper('我的'),
+  ...navigationOptions,
 });
 
 const usertab = createStackNavigator(
