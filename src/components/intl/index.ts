@@ -1,4 +1,4 @@
-import Hooks, { registerHook, callHook } from '@/components/Hooks';
+import Hooks, { callHook } from '@/components/Hooks';
 import config from '@/config';
 import { setCommonParams } from '@/layouts/Routes';
 import zhCN from '@/locales/zh-CN';
@@ -116,7 +116,6 @@ export const upperAll: FormatText = (id, value) => {
  */
 format.upper = upper;
 format.upperAll = upperAll;
-registerHook('onSetLocale');
 format.localeName = matchLocale(config.intl.default);
 Hooks.onSetLocale((locale: LocaleType) => {
   setCommonParams({ locale });
@@ -127,14 +126,12 @@ if (config.intl.deviceInfo) {
   format.localeName = getDeviceLocale(format.localeName);
 }
 if (config.intl.storageKey !== false) {
-  Hooks.onDidMount(() => {
-    AsyncStorage.getItem(config.intl.storageKey || 'locale', (err, res) => {
-      if (err) return;
-      const newLocaleName = matchLocale(res, format.localeName);
-      if (newLocaleName === format.localeName) return;
-      format.localeName = newLocaleName;
-      callHook('onSetLocale', newLocaleName);
-    });
+  AsyncStorage.getItem(config.intl.storageKey || 'locale', (err, res) => {
+    if (err) return;
+    const newLocaleName = matchLocale(res, format.localeName);
+    if (newLocaleName === format.localeName) return;
+    format.localeName = newLocaleName;
+    callHook('onSetLocale', newLocaleName);
   });
 }
 /**

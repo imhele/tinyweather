@@ -1,8 +1,8 @@
 import Wrapper from '@/components/Wrapper';
 import intl, { getLocale } from '@/components/intl';
-import { AnyComponent } from '@/utils/types';
 import HomePage from '@/pages/home';
 import MinePage from '@/pages/mine';
+import { AnyComponent } from '@/utils/types';
 import React from 'react';
 import {
   createStackNavigator,
@@ -63,6 +63,7 @@ const usertab = createStackNavigator(
   {
     initialRouteKey: 'mine',
     initialRouteName: 'mine',
+    initialRouteParams,
   },
 );
 

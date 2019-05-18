@@ -1,21 +1,17 @@
-import Hooks, { callHook, registerHook } from '@/components/Hooks';
+import config from '@/config';
 import { AnyComponentClass } from '@/utils/types';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
+
+export interface WrapperConfig {
+  default?: AnyComponentClass[];
+}
 
 const Wrapper: FC & {
   queue: AnyComponentClass[];
-  didMount: boolean;
-} = ({ children, ...props }) => {
-  useEffect(() => {
-    callHook('onDidMount');
-  }, [false]);
-  return Wrapper.queue.reduce((prev, Curr: any) => <Curr {...props}>{prev}</Curr>, children as any);
-};
+} = ({ children, ...props }) =>
+  Wrapper.queue.reduce((prev, Curr: any) => <Curr {...props}>{prev}</Curr>, children as any);
 
-Wrapper.didMount = false;
-Wrapper.queue = [] as AnyComponentClass[];
-registerHook('onDidMount');
-Hooks.onDidMount(() => (Wrapper.didMount = true));
+Wrapper.queue = config.wrapper.default || ([] as AnyComponentClass[]);
 
 export function wrap(component: AnyComponentClass) {
   return Wrapper.queue.unshift(component);

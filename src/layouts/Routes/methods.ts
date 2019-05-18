@@ -1,9 +1,6 @@
-import React from 'react';
 import {
-  createAppContainer,
   NavigationActions,
   NavigationBackActionPayload,
-  NavigationContainerComponent,
   NavigationInitActionPayload,
   NavigationNavigateAction,
   NavigationNavigateActionPayload,
@@ -11,19 +8,9 @@ import {
   NavigationSetParamsActionPayload,
   StackActions,
 } from 'react-navigation';
-import Navigator from './pages';
+import { WrappedContainer } from './container';
 
-const Container = createAppContainer(Navigator);
 const NavigatorKeys = ['hometab', 'usertab', 'home', 'mine'];
-
-export const WrappedContainer: React.FC & { ref?: NavigationContainerComponent | null } = ({
-  children,
-  ...props
-}) => (
-  <Container {...props} ref={arg => (WrappedContainer.ref = arg)}>
-    {children}
-  </Container>
-);
 
 export function init(options?: NavigationInitActionPayload) {
   if (!WrappedContainer.ref) return;

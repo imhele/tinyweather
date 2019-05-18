@@ -23,6 +23,8 @@ export const registerHook = (name: string): boolean => {
   return true;
 };
 
+export const registerHooks = (...nameList: string[]) => nameList.map(registerHook);
+
 export const callHook = (name: string, ...args: any[]): boolean => {
   if (!Hooks[name]) {
     if (__DEV__) {
@@ -31,7 +33,7 @@ export const callHook = (name: string, ...args: any[]): boolean => {
     }
     return false;
   }
-  Hooks[name].queue = Hooks[name].queue.filter(cbk => cbk());
+  Hooks[name].queue = Hooks[name].queue.filter(cbk => cbk(...args));
   return true;
 };
 
