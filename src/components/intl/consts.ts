@@ -2,9 +2,7 @@ import zhCN from '@/locales/zh-CN';
 import enUS from '@/locales/en-US';
 import { TemplateExecutor } from 'lodash';
 
-export const IdAsMsg: string = {} as any;
-
-type TemplateCache = { [K in keyof typeof zhCN]?: TemplateExecutor }
+type TemplateCache = { [K in keyof typeof zhCN]?: TemplateExecutor };
 
 export const locales = {
   'zh-CN': {

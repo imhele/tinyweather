@@ -7,7 +7,7 @@ import Toast from '@ant-design/react-native/es/toast';
 import template from 'lodash/template';
 import { AsyncStorage } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { IdAsMsg, locales, LocaleType } from './consts';
+import { locales, LocaleType } from './consts';
 
 export * from './consts';
 
@@ -77,7 +77,7 @@ export const format: Format = (id, values) => {
     return id;
   }
   // use id as fomatted message
-  if (message === IdAsMsg) {
+  if (message === '') {
     message = id;
   }
   // format template
