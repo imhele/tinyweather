@@ -36,4 +36,10 @@ export interface IntlConfig {
    * true
    */
   deviceInfo?: boolean;
+  /**
+   * enable persistence func of locale settings
+   * @default
+   * 'locale'
+   */
+  storageKey?: string | false;
 }

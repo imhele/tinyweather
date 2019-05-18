@@ -14,6 +14,7 @@ import {
 import Navigator from './pages';
 
 const Container = createAppContainer(Navigator);
+const NavigatorKeys = ['hometab', 'usertab', 'home', 'mine'];
 
 export const WrappedContainer: React.FC & { ref?: NavigationContainerComponent | null } = ({
   children,
@@ -42,6 +43,13 @@ export function back(options?: NavigationBackActionPayload) {
 export function setParams(options: NavigationSetParamsActionPayload) {
   if (!WrappedContainer.ref) return;
   return WrappedContainer.ref.dispatch(NavigationActions.setParams(options));
+}
+
+export function setCommonParams(params: NavigationParams) {
+  if (!WrappedContainer.ref) return;
+  NavigatorKeys.forEach(key => {
+    WrappedContainer.ref!.dispatch(NavigationActions.setParams({ key, params }));
+  });
 }
 
 export function push(

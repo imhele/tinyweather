@@ -1,5 +1,6 @@
-import Wrapper from '@/components/Wrapper';
+import Hooks, { registerHook, callHook } from '@/components/Hooks';
 import config from '@/config';
+import { setCommonParams } from '@/layouts/Routes';
 import zhCN from '@/locales/zh-CN';
 import Portal from '@ant-design/react-native/es/portal';
 import Toast from '@ant-design/react-native/es/toast';
@@ -16,19 +17,43 @@ export function matchLocale(localeName?: any, defaultValue: LocaleType = 'zh-CN'
   return res ? res[0] : defaultValue;
 }
 
-export function getDeviceLocale(): LocaleType {
-  return matchLocale(DeviceInfo.getDeviceLocale());
+/**
+ * match locale by device info
+ * @default
+ * 'zh-CN'
+ */
+export function getDeviceLocale(defaultValue: LocaleType = 'zh-CN'): LocaleType {
+  return matchLocale(DeviceInfo.getDeviceLocale(), defaultValue);
 }
 
+/**
+ * get current locale type
+ */
 export function getLocale(): LocaleType {
   return format.localeName;
 }
 
 export function setLocale(localeName: LocaleType) {
-  const toastKey = Toast.loading(upper('正在设置语言'));
-  AsyncStorage.setItem('locale', localeName, err => {
+  const newLocaleName = matchLocale(localeName, format.localeName);
+  if (newLocaleName === format.localeName) return;
+
+  const toastKey = Toast.loading(upper('正在设置语言'), 0);
+  const { storageKey = 'locale' } = config.intl;
+  if (storageKey === false) {
+    Portal.remove(toastKey);
+    format.localeName = newLocaleName;
+    callHook('onSetLocale');
+    return;
+  }
+
+  AsyncStorage.setItem(storageKey, newLocaleName, err => {
     Portal.remove(toastKey);
     if (err) return Toast.fail(upper('设置语言失败'));
+    format.localeName = newLocaleName;
+    Hooks.onSetLocale(() => {
+      Toast.success(upper('设置语言成功'));
+    });
+    callHook('onSetLocale', newLocaleName);
   });
 }
 
@@ -47,7 +72,7 @@ export const format: Format = (id, values) => {
   // get locale text failed
   if (message === void 0) {
     if (__DEV__) {
-      console.error(`[intl] Get '${format.localeName}' locale text of \`${id}\` failed.`);
+      console.error(`[intl] Get '${format.localeName}' locale text of '${id}' failed.`);
     }
     return id;
   }
@@ -91,14 +116,26 @@ export const upperAll: FormatText = (id, value) => {
  */
 format.upper = upper;
 format.upperAll = upperAll;
-format.localeName = matchLocale(null, config.intl.default);
-const { deviceInfo = true } = config.intl;
-if (deviceInfo) {
-  Wrapper.onDidMount(() =>
-    AsyncStorage.getItem('locale', (err, res) => {
+registerHook('onSetLocale');
+format.localeName = matchLocale(config.intl.default);
+Hooks.onSetLocale((locale: LocaleType) => {
+  setCommonParams({ locale });
+  return true;
+});
+
+if (config.intl.deviceInfo) {
+  format.localeName = getDeviceLocale(format.localeName);
+}
+if (config.intl.storageKey !== false) {
+  Hooks.onDidMount(() => {
+    AsyncStorage.getItem(config.intl.storageKey || 'locale', (err, res) => {
       if (err) return;
-    }),
-  );
+      const newLocaleName = matchLocale(res, format.localeName);
+      if (newLocaleName === format.localeName) return;
+      format.localeName = newLocaleName;
+      callHook('onSetLocale', newLocaleName);
+    });
+  });
 }
 /**
  ** ***************
