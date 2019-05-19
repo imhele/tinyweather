@@ -19,10 +19,14 @@ const PX: ((size: number) => number) & {
   Device: typeof Device;
   FontScale: typeof FontScale;
   PixelRatio: typeof PixelRatio;
+  VW: (percent: number) => number;
+  VH: (percent: number) => number;
 } = size => Math.round(size * PixelRatio.Scaled + 0.5);
 
 PX.Device = Device;
 PX.FontScale = FontScale;
 PX.PixelRatio = PixelRatio;
+PX.VW = (percent: number) => Math.round((Device.Width * percent) / 100 + 0.5);
+PX.VH = (percent: number) => Math.round((Device.Height * percent) / 100 + 0.5);
 
 export default PX;

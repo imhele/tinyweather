@@ -1,8 +1,10 @@
-import zhCNLang from '@/locales/zh-CN/lang';
-import zhCNMine from '@/locales/zh-CN/mine';
+import Lang from './lang';
+import Mine from './mine';
+import Word from './word';
 
 export default {
-  ...zhCNLang,
-  ...zhCNMine,
+  ...Lang,
+  ...Mine,
+  ...Word,
   挑食: '',
 };
