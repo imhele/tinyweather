@@ -1,16 +1,22 @@
 import Icon from '@/components/Icon';
 import intl from '@/components/intl';
-import { FCN } from '@/utils/types';
-import React from 'react';
+import { Color } from '@/config';
+import connect from '@/models';
+import React, { FC } from 'react';
 import { Text, View } from 'react-native';
-import { Color, PX } from '@/config';
+import { NavigationScreenProp } from 'react-navigation';
 
-const Header: FCN = ({ navigation }) => (
+interface HeaderProps {
+  navigation: NavigationScreenProp<any>;
+  wingBlank: number;
+}
+
+const Header: FC<HeaderProps> = ({ wingBlank }) => (
   <View
     style={{
       backgroundColor: Color.Primary,
       flexDirection: 'row',
-      paddingHorizontal: 24,
+      paddingHorizontal: wingBlank,
       paddingVertical: 12,
     }}
   >
@@ -19,15 +25,16 @@ const Header: FCN = ({ navigation }) => (
     </View>
     <View
       style={{
-        backgroundColor: '#fff',
         flex: 1,
         height: 40,
-        borderRadius: PX(4),
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        backgroundColor: '#fff',
       }}
     >
-      <Text>{intl('搜索')}</Text>
+      <Text style={{ lineHeight: 40, fontSize: 16, color: Color.B3 }}>{intl.UA('搜索')}</Text>
     </View>
   </View>
 );
 
-export default Header;
+export default connect(({ global: { wingBlank } }) => ({ wingBlank }))<HeaderProps>(Header);

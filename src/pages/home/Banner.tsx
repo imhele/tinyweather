@@ -1,7 +1,7 @@
 import { Color, PX } from '@/config';
+import connect from '@/models';
 import React, { FC } from 'react';
 import { Text, View } from 'react-native';
-import connect from '@/models';
 
 interface BannerProps {
   wingBlank: number;
@@ -18,12 +18,16 @@ const Banner: FC<BannerProps> = ({ wingBlank }) => {
         style={{
           position: 'absolute',
           top: 0,
+          left: 0,
+          width: PX.Device.Width,
           height: bannerHeight / 2,
           backgroundColor: Color.Primary,
         }}
       />
-      <View style={{ flex: 1, backgroundColor: Color.Theme[2] }}>
-        <Text style={{ flex: 1 }}>Banner Here.</Text>
+      <View style={{ flex: 1, borderRadius: 8, backgroundColor: Color.Theme[2] }}>
+        <Text style={{ textAlign: 'center', fontSize: PX(16), color: Color.Primary }}>
+          Banner Here.
+        </Text>
       </View>
     </View>
   );

@@ -64,6 +64,8 @@ interface Format<T = string> {
   localeName: LocaleType;
   upper: FormatText;
   upperAll: FormatText;
+  U: FormatText;
+  UA: FormatText;
 }
 
 export const format: Format = (id, values) => {
@@ -114,6 +116,8 @@ export const upperAll: FormatText = (id, value) => {
  ** INIT `intl` START
  ** *****************
  */
+format.U = upper;
+format.UA = upperAll;
 format.upper = upper;
 format.upperAll = upperAll;
 format.localeName = matchLocale(config.intl.default);
