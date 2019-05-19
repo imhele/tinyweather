@@ -1,14 +1,13 @@
-import intl, { setLocale } from '@/components/intl';
 import { FCN } from '@/utils/types';
 import React from 'react';
-import { Text } from 'react-native';
+import { StatusBar, View } from 'react-native';
 
 const Home: FCN = props => {
-  return <Text>{intl('挑食')}</Text>;
+  return <View><StatusBar /></View>;
 };
 
 Home.navigationOptions = {
-  header: null,
+  headerBackTitle: null,
 };
 
 export default Home;

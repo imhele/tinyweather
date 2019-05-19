@@ -41,6 +41,11 @@
       "git add"
     ]
   },
+  "rnpm": {
+    "assets": [
+      "src/assets/"
+    ]
+  },
   "jest": {
     "preset": "react-native"
   }

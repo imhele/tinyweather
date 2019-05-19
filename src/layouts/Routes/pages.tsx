@@ -1,5 +1,7 @@
 import Wrapper from '@/components/Wrapper';
+import TabBarIcon from '@/components/Icon/TabBarIcon';
 import intl, { getLocale } from '@/components/intl';
+import { Color } from '@/config';
 import HomePage from '@/pages/home';
 import MinePage from '@/pages/mine';
 import { AnyComponent, FCN } from '@/utils/types';
@@ -31,6 +33,7 @@ const [home, mine] = [HomePage, MinePage].map((Page: FCN) => {
  ** ****************************
  */
 const hometabConfig: NavigationScreenConfig<NavigationScreenOptions> = ({ navigationOptions }) => ({
+  tabBarIcon: TabBarIcon({ type: 'home' }),
   title: intl.upper('挑食'),
   ...navigationOptions,
 });
@@ -55,6 +58,7 @@ hometab.navigationOptions = hometabConfig;
  ** ****************************
  */
 const usertabConfig: NavigationScreenConfig<NavigationScreenOptions> = ({ navigationOptions }) => ({
+  tabBarIcon: TabBarIcon({ type: 'user' }),
   title: intl.upper('我的'),
   ...navigationOptions,
 });
@@ -88,10 +92,19 @@ const Root = createBottomTabNavigator(
     defaultNavigationOptions: {},
     order: ['hometab', 'usertab'],
     tabBarOptions: {
-      activeTintColor: '#fa8c16',
-      inactiveTintColor: '#9d9d9d',
+      activeTintColor: Color.TabBar.active,
+      inactiveTintColor: Color.TabBar.inactive,
       showIcon: true,
       showLabel: true,
+      labelStyle: {
+        fontSize: 14,
+      },
+      style: {
+        height: 60,
+        borderTopWidth: 1,
+        paddingVertical: 4,
+        borderTopColor: Color.TabBar.border,
+      },
     },
   },
 );
