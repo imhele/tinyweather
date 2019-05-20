@@ -10,10 +10,12 @@ const Device = {
 const PixelRatio = {
   Default: 2,
   Device: ReactNative.PixelRatio.get(),
+  DeviceAdaption: 2,
   Scaled: 1,
 };
 
-PixelRatio.Scaled = (PixelRatio.Device * PixelRatio.Scaled) / PixelRatio.Default;
+PixelRatio.DeviceAdaption = Math.min(PixelRatio.Device, PixelRatio.DeviceAdaption);
+PixelRatio.Scaled = (PixelRatio.DeviceAdaption * PixelRatio.Scaled) / PixelRatio.Default;
 
 const PX: ((size: number) => number) & {
   Device: typeof Device;

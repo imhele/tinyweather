@@ -22,6 +22,7 @@ export default {
     active: Primary,
     inactive: '#666666',
     border: '#e3e3e3',
+    normal: '#373737',
   },
   B0: `rgba(0, 0, 0, ${Opacity[0]})`,
   B1: `rgba(0, 0, 0, ${Opacity[1]})`,

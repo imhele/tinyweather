@@ -9,6 +9,10 @@ const enUS: typeof zhCN = {
   ...Word,
   挑食: 'chosyeat',
   SLOGAN: 'your nutrition specialist',
+  'toolbar-0': 'Staple food',
+  'toolbar-1': 'Nearby',
+  'toolbar-2': 'Soup&Drink',
+  'toolbar-3': 'Snack',
 };
 
 export default enUS;

@@ -46,6 +46,10 @@
 		E1BA2E9CE1254D3F8C1C3B87 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20EF683BAAF44735B441761D /* libRNDeviceInfo.a */; };
 		A9374D4DE0F549C5972B8D71 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C61989C525B4A7397FB23E7 /* libRNDeviceInfo-tvOS.a */; };
 		AA5E643E3EC04BF1969F8AD9 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15C085C0EFC54ADAA6B4C231 /* iconfont.ttf */; };
+		FC2932C30CDB41F89E4D2FA1 /* toolbar-0.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F51963C4444CE39E919B25 /* toolbar-0.png */; };
+		ECF4348BA13B4E06ACC6F3B2 /* toolbar-1.png in Resources */ = {isa = PBXBuildFile; fileRef = AC9A99C9D7E64FB59589DFC3 /* toolbar-1.png */; };
+		BAD132E7B1744123AE3E0B20 /* toolbar-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E6254FC80A0E46FA935ADF97 /* toolbar-2.png */; };
+		3339819A13784B3E8276A492 /* toolbar-3.png in Resources */ = {isa = PBXBuildFile; fileRef = CD1BDC6EA8994319BAF2C943 /* toolbar-3.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,6 +366,10 @@
 		20EF683BAAF44735B441761D /* libRNDeviceInfo.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo.a"; path = "libRNDeviceInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		8C61989C525B4A7397FB23E7 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo-tvOS.a"; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		15C085C0EFC54ADAA6B4C231 /* iconfont.ttf */ = {isa = PBXFileReference; name = "iconfont.ttf"; path = "../src/assets/icon/iconfont.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		02F51963C4444CE39E919B25 /* toolbar-0.png */ = {isa = PBXFileReference; name = "toolbar-0.png"; path = "../src/assets/image/toolbar-0.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AC9A99C9D7E64FB59589DFC3 /* toolbar-1.png */ = {isa = PBXFileReference; name = "toolbar-1.png"; path = "../src/assets/image/toolbar-1.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E6254FC80A0E46FA935ADF97 /* toolbar-2.png */ = {isa = PBXFileReference; name = "toolbar-2.png"; path = "../src/assets/image/toolbar-2.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CD1BDC6EA8994319BAF2C943 /* toolbar-3.png */ = {isa = PBXFileReference; name = "toolbar-3.png"; path = "../src/assets/image/toolbar-3.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -640,6 +648,10 @@
 				27A02B97E7DD44959EF3DDEE /* antfill.ttf */,
 				5A0FD4EB1071418B8801E308 /* antoutline.ttf */,
 				15C085C0EFC54ADAA6B4C231 /* iconfont.ttf */,
+				02F51963C4444CE39E919B25 /* toolbar-0.png */,
+				AC9A99C9D7E64FB59589DFC3 /* toolbar-1.png */,
+				E6254FC80A0E46FA935ADF97 /* toolbar-2.png */,
+				CD1BDC6EA8994319BAF2C943 /* toolbar-3.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1094,6 +1106,10 @@
 				D16357B2A2614775A28B6C43 /* antfill.ttf in Resources */,
 				EB5371FD6D0A486799B80DA2 /* antoutline.ttf in Resources */,
 				AA5E643E3EC04BF1969F8AD9 /* iconfont.ttf in Resources */,
+				FC2932C30CDB41F89E4D2FA1 /* toolbar-0.png in Resources */,
+				ECF4348BA13B4E06ACC6F3B2 /* toolbar-1.png in Resources */,
+				BAD132E7B1744123AE3E0B20 /* toolbar-2.png in Resources */,
+				3339819A13784B3E8276A492 /* toolbar-3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
