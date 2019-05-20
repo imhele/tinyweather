@@ -1,3 +1,4 @@
+import { Font } from '@/config';
 import React from 'react';
 import { TabBarIconProps } from 'react-navigation';
 import Icon, { IconProps } from './index';
@@ -9,11 +10,11 @@ const TabBarIcon = (props: IconProps) => ({ focused, tintColor: color }: TabBarI
     style={[
       focused && color
         ? {
-            fontSize: 28,
+            fontSize: Font.$4.FS,
             color,
           }
         : {
-            fontSize: 28,
+            fontSize: Font.$4.FS,
           },
       props.style,
     ]}

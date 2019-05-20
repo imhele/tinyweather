@@ -1,7 +1,7 @@
 import { HoverScale } from '@/components/Animation';
 import Icon from '@/components/Icon';
 import intl from '@/components/intl';
-import { Color } from '@/config';
+import { Color, Font } from '@/config';
 import connect from '@/models';
 import React, { FC } from 'react';
 import { StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -18,11 +18,11 @@ const Header: FC<HeaderProps> = ({ wingBlank }) => (
       backgroundColor: Color.Primary,
       flexDirection: 'row',
       paddingHorizontal: wingBlank,
-      paddingVertical: 12,
+      paddingVertical: 8,
     }}
   >
     <HoverScale opacity={{ activeOpacity: Color.Opacity[1] }}>
-      <Icon type="scan" style={{ fontSize: 40, color: '#fff' }} />
+      <Icon type="scan" style={{ fontSize: 32, color: '#fff' }} />
     </HoverScale>
     <TouchableOpacity activeOpacity={Color.Opacity[1]} style={styles.searchBar}>
       <Text style={styles.searchText}>{intl.UA('搜索')}</Text>
@@ -34,23 +34,23 @@ const Header: FC<HeaderProps> = ({ wingBlank }) => (
 const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
-    height: 40,
-    borderRadius: 8,
-    paddingHorizontal: 12,
+    height: 32,
+    borderRadius: 4,
+    paddingHorizontal: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginLeft: 8,
   } as ViewStyle,
   searchText: {
-    fontSize: 16,
-    lineHeight: 40,
+    lineHeight: 32,
     color: Color.B3,
+    fontSize: Font.$1.FS,
   } as TextStyle,
   searchIcon: {
-    fontSize: 24,
     marginLeft: 8,
-    lineHeight: 40,
+    lineHeight: 32,
+    fontSize: Font.$4.FS,
     color: Color.Primary,
   } as TextStyle,
 });

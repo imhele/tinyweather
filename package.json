@@ -6,7 +6,8 @@
     "test": "jest",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint --project . -c tslint.yml",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.bundle"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.8",

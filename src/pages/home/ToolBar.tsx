@@ -38,9 +38,9 @@ const ToolBar: FC<ToolBarProps> = ({ imageStyle, itemStyle, style, textStyle, wi
 
 const styles = StyleSheet.create({
   container: {
-    height: PX(84),
+    height: 84,
     flexDirection: 'row',
-    paddingVertical: PX(4),
+    paddingVertical: 4,
   } as ViewStyle,
   item: {
     flex: 1,
@@ -48,11 +48,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   } as ViewStyle,
   imageItem: {
-    width: PX(48),
-    height: PX(48),
+    width: 45,
+    height: 45,
   } as ImageStyle,
   textItem: {
-    fontSize: PX(14),
+    fontSize: 14,
     fontWeight: '500',
     color: Color.TabBar.normal,
   } as TextStyle,

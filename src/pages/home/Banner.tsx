@@ -27,16 +27,7 @@ const Banner: FC<BannerProps> = ({ banners, style, wingBlank, wrapperStyle }) =>
 
   return (
     <View style={wrapperStyle}>
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: PX.Device.Width,
-          height: bannerHeight / 2,
-          backgroundColor: Color.Primary,
-        }}
-      />
+      <View style={[styles.backGround, { height: bannerHeight / 2 }]} />
       <Carousel
         autoplay
         autoplayInterval={5000}
@@ -69,8 +60,15 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   } as ViewStyle,
   bannerItem: {
-    borderRadius: 8,
+    borderRadius: 4,
   } as ImageStyle,
+  backGround: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: PX.Device.Width,
+    backgroundColor: Color.Primary,
+  } as ViewStyle,
 });
 
 export default connect(({ global: { wingBlank }, home: { banners } }) => ({ banners, wingBlank }))<

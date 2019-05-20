@@ -4,6 +4,7 @@ import { IntlConfig } from '@/components/intl';
 import { WrapperConfig } from '@/components/Wrapper';
 
 export { default as Color } from './color';
+export { default as Font } from './font';
 export { default as PX } from './pixel';
 export { default as Ratio } from './ratio';
 

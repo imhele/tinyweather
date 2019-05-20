@@ -4,7 +4,7 @@ export interface GlobalState {
 
 const global = {
   state: {
-    wingBlank: 16,
+    wingBlank: 12,
   } as GlobalState,
   reducers: {},
 };

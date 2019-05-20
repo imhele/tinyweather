@@ -1,7 +1,7 @@
 import Wrapper from '@/components/Wrapper';
 import TabBarIcon from '@/components/Icon/TabBarIcon';
 import intl, { getLocale } from '@/components/intl';
-import { Color } from '@/config';
+import { Color, Font } from '@/config';
 import HomePage from '@/pages/home';
 import MinePage from '@/pages/mine';
 import { AnyComponent, FCN } from '@/utils/types';
@@ -20,7 +20,7 @@ const initialRouteParams = {
 const [home, mine] = [HomePage, MinePage].map((Page: FCN) => {
   const Wrapped: FCN = ({ children, ...props }) => (
     <Wrapper {...props}>
-      <Page>{children}</Page>
+      <Page {...props}>{children}</Page>
     </Wrapper>
   );
   Wrapped.navigationOptions = Page.navigationOptions;
@@ -97,10 +97,10 @@ const Root = createBottomTabNavigator(
       showIcon: true,
       showLabel: true,
       labelStyle: {
-        fontSize: 14,
+        fontSize: Font.$0.FS,
       },
       style: {
-        height: 60,
+        height: 56,
         borderTopWidth: 1,
         paddingVertical: 4,
         borderTopColor: Color.TabBar.border,

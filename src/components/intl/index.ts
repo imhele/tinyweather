@@ -11,10 +11,19 @@ import { locales, LocaleType } from './consts';
 
 export * from './consts';
 
-export function matchLocale(localeName?: any, defaultValue: LocaleType = 'zh-CN'): LocaleType {
-  if (typeof localeName !== 'string') return defaultValue;
-  const res = Object.entries(locales).find(l => l[1].match(localeName)) as [LocaleType, any];
-  return res ? res[0] : defaultValue;
+export function matchLocale(defaultValue: LocaleType, ...localeName: any[]): LocaleType {
+  const match = Object.entries(locales).map(l => ({
+    match: l[1].match,
+    name: l[0] as LocaleType,
+  }));
+  localeName.some(n => {
+    if (typeof n !== 'string') return false;
+    const res = match.find(m => m.match(n));
+    if (!res) return false;
+    defaultValue = res.name;
+    return true;
+  });
+  return defaultValue;
 }
 
 /**
@@ -23,7 +32,7 @@ export function matchLocale(localeName?: any, defaultValue: LocaleType = 'zh-CN'
  * 'zh-CN'
  */
 export function getDeviceLocale(defaultValue: LocaleType = 'zh-CN'): LocaleType {
-  return matchLocale(DeviceInfo.getDeviceLocale(), defaultValue);
+  return matchLocale(defaultValue, ...DeviceInfo.getPreferredLocales());
 }
 
 /**
@@ -34,7 +43,7 @@ export function getLocale(): LocaleType {
 }
 
 export function setLocale(localeName: LocaleType) {
-  const newLocaleName = matchLocale(localeName, format.localeName);
+  const newLocaleName = matchLocale(format.localeName, localeName);
   if (newLocaleName === format.localeName) return;
 
   const toastKey = Toast.loading(upper('正在设置语言'), 0);
@@ -120,19 +129,19 @@ format.U = upper;
 format.UA = upperAll;
 format.upper = upper;
 format.upperAll = upperAll;
-format.localeName = matchLocale(config.intl.default);
+format.localeName = matchLocale('zh-CN', config.intl.default);
 Hooks.onSetLocale((locale: LocaleType) => {
   setCommonParams({ locale });
   return true;
 });
 
-if (config.intl.deviceInfo) {
+if (config.intl.deviceInfo !== false) {
   format.localeName = getDeviceLocale(format.localeName);
 }
 if (config.intl.storageKey !== false) {
   AsyncStorage.getItem(config.intl.storageKey || 'locale', (err, res) => {
     if (err) return;
-    const newLocaleName = matchLocale(res, format.localeName);
+    const newLocaleName = matchLocale(format.localeName, res);
     if (newLocaleName === format.localeName) return;
     format.localeName = newLocaleName;
     callHook('onSetLocale', newLocaleName);
