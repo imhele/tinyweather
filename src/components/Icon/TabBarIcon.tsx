@@ -6,18 +6,17 @@ const TabBarIcon = (props: IconProps) => ({ focused, tintColor: color }: TabBarI
   <Icon
     {...props}
     key={props.type}
-    style={
+    style={[
       focused && color
         ? {
             fontSize: 28,
-            ...props.style,
             color,
           }
         : {
             fontSize: 28,
-            ...props.style,
-          }
-    }
+          },
+      props.style,
+    ]}
   />
 );
 

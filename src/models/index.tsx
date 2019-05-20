@@ -93,7 +93,9 @@ wrap(Container);
  */
 type Connect = <S>(
   f: (state: State) => S,
-) => <P>(c: AnyComponentClass<any>) => FC<Omit<P, 'dispatch' | keyof S>>;
+) => <P, R extends boolean = false>(
+  c: AnyComponentClass<any>,
+) => FC<R extends false ? Partial<Omit<P, 'dispatch' | keyof S>> : Omit<P, 'dispatch' | keyof S>>;
 
 export const connect: Connect = mapFunc => Component => {
   const Wrapped: FC = ({ children, ...props }) => (
