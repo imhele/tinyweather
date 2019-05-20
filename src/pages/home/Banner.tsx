@@ -1,22 +1,24 @@
 import { HoverScale } from '@/components/Animation';
-import { Color, PX } from '@/config';
+import { Color, PX, Ratio } from '@/config';
 import connect from '@/models';
+import { Banner as BannerData } from '@/models/home';
 import Carousel from '@ant-design/react-native/es/carousel';
 import React, { FC } from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, ImageStyle, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 interface BannerProps {
+  banners: BannerData[];
   wingBlank: number;
   wrapperStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
 }
 
-const Banner: FC<BannerProps> = ({ style, wingBlank, wrapperStyle }) => {
+const Banner: FC<BannerProps> = ({ banners, style, wingBlank, wrapperStyle }) => {
   const marginVertical = 12;
   const marginHorizontal = wingBlank;
   const bannerWidth = PX.Device.Width - marginHorizontal * 2;
-  const bannerHeight = bannerWidth / 2;
-  const ItemStyle: ViewStyle = {
+  const bannerHeight = bannerWidth * Ratio.Banner;
+  const ItemStyle: ImageStyle = {
     width: bannerWidth,
     height: bannerHeight,
     marginHorizontal,
@@ -43,16 +45,11 @@ const Banner: FC<BannerProps> = ({ style, wingBlank, wrapperStyle }) => {
         infinite
         style={style}
       >
-        <HoverScale style={[styles.bannerItem, ItemStyle]}>
-          <Text style={{ textAlign: 'center', fontSize: PX(16), color: Color.Primary }}>
-            Banner Here.
-          </Text>
-        </HoverScale>
-        <HoverScale style={[styles.bannerItem, ItemStyle]}>
-          <Text style={{ textAlign: 'center', fontSize: PX(16), color: Color.Primary }}>
-            Banner Here.
-          </Text>
-        </HoverScale>
+        {banners.map(banner => (
+          <HoverScale key={banner.key}>
+            <Image source={banner.source} style={[styles.bannerItem, ItemStyle]} />
+          </HoverScale>
+        ))}
       </Carousel>
     </View>
   );
@@ -73,10 +70,9 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   bannerItem: {
     borderRadius: 8,
-    backgroundColor: Color.Theme[1],
-    alignItems: 'center',
-    justifyContent: 'center',
-  } as ViewStyle,
+  } as ImageStyle,
 });
 
-export default connect(({ global: { wingBlank } }) => ({ wingBlank }))<BannerProps>(Banner);
+export default connect(({ global: { wingBlank }, home: { banners } }) => ({ banners, wingBlank }))<
+  BannerProps
+>(Banner);

@@ -1,9 +1,10 @@
+import { HoverScale } from '@/components/Animation';
 import Icon from '@/components/Icon';
 import intl from '@/components/intl';
 import { Color } from '@/config';
 import connect from '@/models';
 import React, { FC } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 interface HeaderProps {
@@ -20,22 +21,38 @@ const Header: FC<HeaderProps> = ({ wingBlank }) => (
       paddingVertical: 12,
     }}
   >
-    <TouchableOpacity activeOpacity={Color.Opacity[1]} style={{ width: 48 }}>
+    <HoverScale opacity={{ activeOpacity: Color.Opacity[1] }}>
       <Icon type="scan" style={{ fontSize: 40, color: '#fff' }} />
-    </TouchableOpacity>
-    <TouchableOpacity
-      activeOpacity={Color.Opacity[1]}
-      style={{
-        flex: 1,
-        height: 40,
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        backgroundColor: '#fff',
-      }}
-    >
-      <Text style={{ lineHeight: 40, fontSize: 16, color: Color.B3 }}>{intl.UA('搜索')}</Text>
+    </HoverScale>
+    <TouchableOpacity activeOpacity={Color.Opacity[1]} style={styles.searchBar}>
+      <Text style={styles.searchText}>{intl.UA('搜索')}</Text>
+      <Icon style={styles.searchIcon} type="search" />
     </TouchableOpacity>
   </View>
 );
+
+const styles = StyleSheet.create({
+  searchBar: {
+    flex: 1,
+    height: 40,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 8,
+  } as ViewStyle,
+  searchText: {
+    fontSize: 16,
+    lineHeight: 40,
+    color: Color.B3,
+  } as TextStyle,
+  searchIcon: {
+    fontSize: 24,
+    marginLeft: 8,
+    lineHeight: 40,
+    color: Color.Primary,
+  } as TextStyle,
+});
 
 export default connect(({ global: { wingBlank } }) => ({ wingBlank }))<HeaderProps>(Header);
