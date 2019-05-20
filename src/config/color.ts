@@ -12,8 +12,10 @@ const Theme = [
 ];
 
 const Primary = Theme[5];
+const Opacity = [0.85, 0.65, 0.45, 0.25, 0.15, 0.09, 0.04, 0.02];
 
 export default {
+  Opacity,
   Primary,
   Theme,
   TabBar: {
@@ -21,20 +23,20 @@ export default {
     inactive: '#666666',
     border: '#e3e3e3',
   },
-  B0: 'rgba(0, 0, 0, 0.85)',
-  B1: 'rgba(0, 0, 0, 0.65)',
-  B2: 'rgba(0, 0, 0, 0.45)',
-  B3: 'rgba(0, 0, 0, 0.25)',
-  B4: 'rgba(0, 0, 0, 0.15)',
-  B5: 'rgba(0, 0, 0, 0.09)',
-  B6: 'rgba(0, 0, 0, 0.04)',
-  B7: 'rgba(0, 0, 0, 0.02)',
+  B0: `rgba(0, 0, 0, ${Opacity[0]})`,
+  B1: `rgba(0, 0, 0, ${Opacity[1]})`,
+  B2: `rgba(0, 0, 0, ${Opacity[2]})`,
+  B3: `rgba(0, 0, 0, ${Opacity[3]})`,
+  B4: `rgba(0, 0, 0, ${Opacity[4]})`,
+  B5: `rgba(0, 0, 0, ${Opacity[5]})`,
+  B6: `rgba(0, 0, 0, ${Opacity[6]})`,
+  B7: `rgba(0, 0, 0, ${Opacity[7]})`,
   W0: 'rgba(255, 255, 255, 1)',
-  W1: 'rgba(255, 255, 255, 0.85)',
-  W2: 'rgba(255, 255, 255, 0.65)',
-  W3: 'rgba(255, 255, 255, 0.45)',
-  W4: 'rgba(255, 255, 255, 0.25)',
-  W5: 'rgba(255, 255, 255, 0.15)',
-  W6: 'rgba(255, 255, 255, 0.09)',
-  W7: 'rgba(255, 255, 255, 0.04)',
+  W1: `rgba(255, 255, 255, ${Opacity[0]})`,
+  W2: `rgba(255, 255, 255, ${Opacity[1]})`,
+  W3: `rgba(255, 255, 255, ${Opacity[2]})`,
+  W4: `rgba(255, 255, 255, ${Opacity[3]})`,
+  W5: `rgba(255, 255, 255, ${Opacity[4]})`,
+  W6: `rgba(255, 255, 255, ${Opacity[5]})`,
+  W7: `rgba(255, 255, 255, ${Opacity[6]})`,
 };

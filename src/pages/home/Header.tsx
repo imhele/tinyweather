@@ -3,7 +3,7 @@ import intl from '@/components/intl';
 import { Color } from '@/config';
 import connect from '@/models';
 import React, { FC } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 interface HeaderProps {
@@ -20,10 +20,11 @@ const Header: FC<HeaderProps> = ({ wingBlank }) => (
       paddingVertical: 12,
     }}
   >
-    <View style={{ width: 48 }}>
+    <TouchableOpacity activeOpacity={Color.Opacity[1]} style={{ width: 48 }}>
       <Icon type="scan" style={{ fontSize: 40, color: '#fff' }} />
-    </View>
-    <View
+    </TouchableOpacity>
+    <TouchableOpacity
+      activeOpacity={Color.Opacity[1]}
       style={{
         flex: 1,
         height: 40,
@@ -33,7 +34,7 @@ const Header: FC<HeaderProps> = ({ wingBlank }) => (
       }}
     >
       <Text style={{ lineHeight: 40, fontSize: 16, color: Color.B3 }}>{intl.UA('搜索')}</Text>
-    </View>
+    </TouchableOpacity>
   </View>
 );
 

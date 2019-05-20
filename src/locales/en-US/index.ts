@@ -8,6 +8,7 @@ const enUS: typeof zhCN = {
   ...Mine,
   ...Word,
   挑食: 'chosyeat',
+  SLOGAN: 'your nutrition specialist',
 };
 
 export default enUS;

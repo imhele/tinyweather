@@ -7,4 +7,5 @@ export default {
   ...Mine,
   ...Word,
   挑食: '',
+  SLOGAN: '你的营养搭配专家',
 };

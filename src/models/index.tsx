@@ -4,18 +4,21 @@ import merge from 'lodash/merge';
 import throttle from 'lodash/throttle';
 import React, { createContext, Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import global from './global';
+import home from './home';
 
 /**
  ** *****
  ** STATE
  ** *****
  */
-type Loading<T> = false | { [K in keyof T]: boolean };
+type Loading<T> = { [K in keyof T | 'model']: boolean };
 export const initialState = {
   $init: false,
   global: global.state,
+  home: home.state,
   $loading: {
-    global: false as Loading<typeof global.reducers>,
+    global: { model: false } as Loading<typeof global.reducers>,
+    home: { model: false } as Loading<typeof home.reducers>,
   },
 };
 export const $STATE = initialState;
@@ -40,23 +43,24 @@ function wrapReducers(namespace: string, reducers: any) {
   const wrappedReducers: any = {};
   Object.keys(reducers).forEach(key => {
     wrappedReducers[key] = async function(payload: any) {
-      dispatch.setState({ $loading: { [namespace]: { [key]: true } } });
+      dispatch.setState({ $loading: { [namespace]: { [key]: true, model: true } } });
       const nextState = await reducers[key](payload, $STATE);
       const $loading = $STATE.$loading as any;
       if (!$loading[namespace]) return;
-      const loading = Object.entries($loading[namespace]).some(a => a[1] && a[0] !== key);
+      const model = Object.entries($loading[namespace]).some(a => a[1] && a[0] !== key);
       return dispatch.setState({
-        [namespace]: nextState,
-        $loading: { [namespace]: loading && { [key]: true } },
+        [namespace]: nextState || {},
+        $loading: { [namespace]: { [key]: false, model } },
       });
     };
   });
-  return wrapReducers;
+  return wrappedReducers;
 }
 
 export const dispatch = {
   setState,
   global: global.reducers,
+  home: home.reducers,
   $setState: (() => {}) as Dispatch<SetStateAction<State>>,
 };
 
@@ -91,10 +95,13 @@ type Connect = <S>(
   f: (state: State) => S,
 ) => <P>(c: AnyComponentClass<any>) => FC<Omit<P, 'dispatch' | keyof S>>;
 
-export const connect: Connect = mapFunc => Component => ({ children, ...props }) => (
-  <Component {...props} {...mapFunc(useContext(StateContext))} dispatch={dispatch}>
-    {children}
-  </Component>
-);
+export const connect: Connect = mapFunc => Component => {
+  const Wrapped: FC = ({ children, ...props }) => (
+    <Component {...props} {...mapFunc(useContext(StateContext))} dispatch={dispatch}>
+      {children}
+    </Component>
+  );
+  return Object.assign(Wrapped, Component);
+};
 
 export default connect;
