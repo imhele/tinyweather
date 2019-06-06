@@ -1,13 +1,15 @@
 import { getLocale } from '@/components/intl';
+import { Color, Font } from '@/config';
+import connect from '@/models';
 import { City as CityModel } from '@/services/weather';
 import React, { FC } from 'react';
-import { Text, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import Day from './day';
 
-export interface CityProps {
+const CityName: FC<{
   city: CityModel;
-}
-
-const CityName: FC<{ city: CityModel }> = ({ city }) => {
+  style?: StyleProp<TextStyle>;
+}> = ({ city, style }) => {
   let prefix = city.en;
   let suffix: string | undefined;
   if (getLocale() === 'zh-CN') {
@@ -17,25 +19,50 @@ const CityName: FC<{ city: CityModel }> = ({ city }) => {
   }
   if (suffix) {
     return (
-      <View>
-        <Text>{prefix}</Text>
+      <Text numberOfLines={1} style={[styles.cityNameContainer, style]}>
+        <Text style={styles.cityName}>{`${prefix}  `}</Text>
         <Text>{suffix}</Text>
-      </View>
+      </Text>
     );
   }
   return (
-    <View>
-      <Text>{prefix}</Text>
-    </View>
+    <Text numberOfLines={1} style={[styles.cityNameContainer, style]}>
+      <Text style={styles.cityName}>{prefix}</Text>
+    </Text>
   );
 };
 
-const City: FC<CityProps> = ({ city }) => {
+export interface CityProps {
+  city: CityModel;
+  wingBlank: number;
+}
+
+const City: FC<CityProps> = ({ city, wingBlank }) => {
   return (
-    <View>
+    <View style={[styles.container, { paddingHorizontal: wingBlank }]}>
       <CityName city={city} />
+      <Day />
+      <Day />
+      <Day />
+      <Day />
     </View>
   );
 };
 
-export default City;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  } as ViewStyle,
+  cityNameContainer: {
+    lineHeight: 48,
+    color: Color.B2,
+    fontSize: Font.$0.FS,
+  } as TextStyle,
+  cityName: {
+    color: Color.B0,
+    fontWeight: '500',
+    fontSize: Font.$2.FS,
+  } as TextStyle,
+});
+
+export default connect(({ global: { wingBlank } }) => ({ wingBlank }))<CityProps>(City);

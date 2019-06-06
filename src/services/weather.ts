@@ -1,6 +1,6 @@
 import intl from '@/components/intl';
 import config from '@/config';
-import { Toast } from '@ant-design/react-native';
+import Toast from '@ant-design/react-native/es/toast';
 
 export interface City {
   id: number;

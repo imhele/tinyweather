@@ -1,10 +1,12 @@
+import { PX } from '@/config';
+
 export interface GlobalState {
   wingBlank: number;
 }
 
 const global = {
   state: {
-    wingBlank: 12,
+    wingBlank: PX(24),
   } as GlobalState,
   reducers: {},
 };
