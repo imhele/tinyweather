@@ -10,12 +10,10 @@ const Device = {
 const PixelRatio = {
   Default: 2,
   Device: ReactNative.PixelRatio.get(),
-  DeviceAdaption: 2,
   Scaled: 1,
 };
 
-PixelRatio.DeviceAdaption = Math.min(PixelRatio.Device, PixelRatio.DeviceAdaption);
-PixelRatio.Scaled = (PixelRatio.DeviceAdaption * PixelRatio.Scaled) / PixelRatio.Default;
+PixelRatio.Scaled = (PixelRatio.Device * PixelRatio.Scaled) / Math.pow(PixelRatio.Default, 2);
 
 const PX: ((size: number) => number) & {
   Device: typeof Device;
@@ -23,12 +21,12 @@ const PX: ((size: number) => number) & {
   PixelRatio: typeof PixelRatio;
   VW: (percent: number) => number;
   VH: (percent: number) => number;
-} = size => Math.round(size * PixelRatio.Scaled + 0.5);
+} = size => Math.floor(size * PixelRatio.Scaled);
 
 PX.Device = Device;
 PX.FontScale = FontScale;
 PX.PixelRatio = PixelRatio;
-PX.VW = (percent: number) => Math.round((Device.Width * percent) / 100 + 0.5);
-PX.VH = (percent: number) => Math.round((Device.Height * percent) / 100 + 0.5);
+PX.VW = (percent: number) => Math.floor((Device.Width * percent) / 100);
+PX.VH = (percent: number) => Math.floor((Device.Height * percent) / 100);
 
 export default PX;

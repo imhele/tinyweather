@@ -21,4 +21,5 @@ registerHooks('onDidMount', 'onSetLocale');
 export default {
   intl,
   wrapper,
+  ApiPrefix: 'https://1704858712026921.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/Temp',
 };

@@ -5,6 +5,7 @@ import throttle from 'lodash/throttle';
 import React, { createContext, Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import global from './global';
 import home from './home';
+import weather from './weather'
 
 /**
  ** *****
@@ -16,9 +17,11 @@ export const initialState = {
   $init: false,
   global: global.state,
   home: home.state,
+  weather: weather.state,
   $loading: {
     global: { model: false } as Loading<typeof global.reducers>,
     home: { model: false } as Loading<typeof home.reducers>,
+    weather: { model: false } as Loading<typeof weather.reducers>,
   },
 };
 export const $STATE = initialState;
@@ -61,6 +64,7 @@ export const dispatch = {
   setState,
   global: global.reducers,
   home: home.reducers,
+  weather: weather.reducers,
   $setState: (() => {}) as Dispatch<SetStateAction<State>>,
 };
 
@@ -79,7 +83,7 @@ export const Container: FC = ({ children }) => {
   const [state, $setState] = useState(initialState);
   if (!$STATE.$init) {
     dispatch.setState({ $init: true });
-    dispatch.$setState = throttle($setState, 100);
+    dispatch.$setState = throttle($setState, 50);
   }
   return <StateContext.Provider value={state}>{children}</StateContext.Provider>;
 };

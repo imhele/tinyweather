@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: 45,
   } as ImageStyle,
   textItem: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: Color.TabBar.normal,
   } as TextStyle,
