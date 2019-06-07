@@ -3,4 +3,4 @@ declare module '*.png';
 declare module '*.svg';
 declare module '*.jpg';
 declare module '*.jpeg';
-declare module 'rc-animate';
+declare module 'react-native-shadow';

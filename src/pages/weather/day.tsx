@@ -1,30 +1,47 @@
 import { HoverScale } from '@/components/Animation';
 import Icon from '@/components/Icon';
 import { Color, Font, PX } from '@/config';
+import connect from '@/models';
 import { Forecast } from '@/services/weather';
 import { WeatherColor, WeatherIcon } from '@/utils/weatherIcon';
 import React, { FC, useState } from 'react';
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { BoxShadow } from 'react-native-shadow';
 
 export interface DayProps {
-  style?: StyleProp<ViewStyle>;
   forecast: Forecast;
+  style?: StyleProp<ViewStyle>;
+  wingBlank: number;
 }
 
-const Day: FC<DayProps> = ({ forecast, style }) => {
+const Day: FC<DayProps> = ({ forecast, style, wingBlank }) => {
   const [isNight, setNight] = useState(false);
   const status = isNight ? forecast.conditionIdNight : forecast.conditionIdDay;
   const icon = WeatherIcon[status];
   const color = WeatherColor[icon];
+
+  const shadowOpt = {
+    color,
+    opacity: 0.32,
+    border: PX(24),
+    height: PX(200),
+    radius: styles.container.borderRadius,
+    width: PX.Device.Width - wingBlank * 2,
+    style: { position: 'absolute', top: PX(16), scaleX: 0.9, scaleY: 0.9 } as ViewStyle,
+  };
+
   return (
-    <HoverScale scale={[1, 0.92]} style={[styles.container, { backgroundColor: color }, style]}>
-      <View style={styles.temperature}>
-        <Text>
-          <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
-          <Text style={styles.tempNight}>{`${forecast.tempNight}°`}</Text>
-        </Text>
+    <HoverScale scale={[1, 0.92]}>
+      <View style={[styles.container, { backgroundColor: color }, style]}>
+        <BoxShadow setting={shadowOpt} />
+        <View style={styles.temperature}>
+          <Text>
+            <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
+            <Text style={styles.tempNight}>{`${forecast.tempNight}°`}</Text>
+          </Text>
+        </View>
+        <Icon style={styles.icon} type={icon} />
       </View>
-      <Icon style={styles.icon} type={icon} />
     </HoverScale>
   );
 };
@@ -34,8 +51,7 @@ const styles = StyleSheet.create({
     height: PX(200),
     alignItems: 'center',
     borderRadius: PX(32),
-    marginVertical: PX(16),
-    backgroundColor: '#000',
+    marginBottom: PX(32),
     justifyContent: 'center',
   } as ViewStyle,
   icon: {
@@ -61,4 +77,4 @@ const styles = StyleSheet.create({
   } as TextStyle,
 });
 
-export default Day;
+export default connect(({ global: { wingBlank } }) => ({ wingBlank }))<DayProps>(Day);
