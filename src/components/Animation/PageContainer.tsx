@@ -18,10 +18,11 @@ const PageContainer: FC<PageContainerProps> = ({
   refreshColor = Color.Primary,
   refreshing = false,
   refreshProps = {},
-  refreshTitle = intl.U('SLOGAN'),
+  refreshTitle = intl.U('正在刷新'),
   ...props
 }) => (
   <ScrollView
+    nestedScrollEnabled
     pinchGestureEnabled={false}
     refreshControl={
       <RefreshControl
@@ -33,6 +34,8 @@ const PageContainer: FC<PageContainerProps> = ({
         title={refreshTitle}
       />
     }
+    showsHorizontalScrollIndicator={false}
+    showsVerticalScrollIndicator={false}
     {...props}
   >
     {children}

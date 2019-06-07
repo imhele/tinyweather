@@ -1,4 +1,4 @@
-package com.chosyeat;
+package com.tinyweather;
 
 import android.app.Application;
 

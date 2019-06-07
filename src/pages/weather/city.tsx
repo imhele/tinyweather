@@ -1,5 +1,5 @@
 import { getLocale } from '@/components/intl';
-import { Color, Font } from '@/config';
+import { Color, Font, PX } from '@/config';
 import connect from '@/models';
 import { City as CityModel } from '@/services/weather';
 import React, { FC } from 'react';
@@ -51,7 +51,9 @@ const City: FC<CityProps> = ({ city, wingBlank }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: PX.VW(100),
+    position: 'relative',
+    left: -100,
   } as ViewStyle,
   cityNameContainer: {
     lineHeight: 48,
