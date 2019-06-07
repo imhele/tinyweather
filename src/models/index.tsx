@@ -5,7 +5,7 @@ import throttle from 'lodash/throttle';
 import React, { createContext, Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import global from './global';
 import home from './home';
-import weather from './weather'
+import weather from './weather';
 
 /**
  ** *****
@@ -48,9 +48,8 @@ function wrapReducers(namespace: string, reducers: any) {
     wrappedReducers[key] = async function(payload: any) {
       dispatch.setState({ $loading: { [namespace]: { [key]: true, model: true } } });
       const nextState = await reducers[key](payload, $STATE);
-      const $loading = $STATE.$loading as any;
-      if (!$loading[namespace]) return;
-      const model = Object.entries($loading[namespace]).some(a => a[1] && a[0] !== key);
+      const $loading = { ...($STATE.$loading as any)[namespace], model: 0, [key]: 0 };
+      const model = Object.entries($loading).some(a => a[1]);
       return dispatch.setState({
         [namespace]: nextState || {},
         $loading: { [namespace]: { [key]: false, model } },
@@ -83,7 +82,7 @@ export const Container: FC = ({ children }) => {
   const [state, $setState] = useState(initialState);
   if (!$STATE.$init) {
     dispatch.setState({ $init: true });
-    dispatch.$setState = throttle($setState, 50);
+    dispatch.$setState = throttle($setState, 10);
   }
   return <StateContext.Provider value={state}>{children}</StateContext.Provider>;
 };

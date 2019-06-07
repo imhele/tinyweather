@@ -2,7 +2,12 @@ import { City, getWeather, searchCity, Weather } from '@/services/weather';
 
 export interface WeatherState {
   cities: City[];
+  weather: (Weather | undefined)[];
 }
+
+const fetchWeather = (city: number) => {
+  return new Promise(resolver => setTimeout(resolver, 2000));
+};
 
 const weather = {
   state: {
@@ -23,7 +28,10 @@ const weather = {
       },
     ],
   } as WeatherState,
-  reducers: {},
+  weather: [],
+  reducers: {
+    fetchWeather,
+  },
 };
 
 export default weather;
