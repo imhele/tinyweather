@@ -70,8 +70,8 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData } }) => {
     <PageContainer onRefresh={onRefresh} refreshing={loading} style={{ flex: 1 }}>
       <StatusBar animated barStyle="dark-content" backgroundColor="#fff" />
       <Swiper onChangePage={onChangePage} scrollEnabled={scrollEnabled} width={PX.VW(100)}>
-        {cities.map(city => (
-          <City city={city} key={city.id} />
+        {cities.map((city, index) => (
+          <City city={city} key={city.id} weather={weatherData[index]} />
         ))}
       </Swiper>
     </PageContainer>

@@ -1,7 +1,7 @@
 import { getLocale } from '@/components/intl';
 import { Color, Font, PX } from '@/config';
 import connect from '@/models';
-import { City as CityModel } from '@/services/weather';
+import { City as CityModel, Forecast, Weather } from '@/services/weather';
 import React, { FC } from 'react';
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import Day from './day';
@@ -32,19 +32,41 @@ const CityName: FC<{
   );
 };
 
+const defaultForecast: Forecast = {
+  conditionDay: '晴',
+  conditionIdDay: '0',
+  conditionIdNight: '30',
+  conditionNight: '晴',
+  humidity: '--',
+  predictDate: '--',
+  tempDay: '--',
+  tempNight: '--',
+  updatetime: '-- --',
+  windDegreesDay: '--',
+  windDegreesNight: '--',
+  windDirDay: '',
+  windDirNight: '',
+  windLevelDay: '--',
+  windLevelNight: '--',
+};
+
 export interface CityProps {
   city: CityModel;
+  weather?: Partial<Weather>;
   wingBlank: number;
 }
 
-const City: FC<CityProps> = ({ city, wingBlank }) => {
+const City: FC<CityProps> = ({ city, weather = {}, wingBlank }) => {
+  const {
+    forecast = [defaultForecast, defaultForecast, defaultForecast],
+    timezone = '8',
+  } = weather;
   return (
     <View style={[styles.container, { paddingHorizontal: wingBlank }]}>
       <CityName city={city} />
-      <Day />
-      <Day />
-      <Day />
-      <Day />
+      <Day forecast={forecast[0]} />
+      <Day forecast={forecast[1]} />
+      <Day forecast={forecast[2]} />
     </View>
   );
 };
