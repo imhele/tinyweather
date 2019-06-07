@@ -10,7 +10,6 @@ import React, { FC, useState } from 'react';
 import {
   Animated,
   LayoutAnimation,
-  StyleProp,
   StyleSheet,
   Text,
   TextStyle,
@@ -20,14 +19,14 @@ import {
 import { BoxShadow } from 'react-native-shadow';
 
 const createAnimate = (collapsed: boolean) => {
-  const iconFontSize: any = new Animated.Value(collapsed ? PX(160) : PX(240));
+  const iconScale: any = new Animated.Value(collapsed ? 1 : 1.5);
   const ifs = [
-    Animated.timing(iconFontSize, { toValue: PX(240), useNativeDriver: true }),
-    Animated.timing(iconFontSize, { toValue: PX(160), useNativeDriver: true }),
+    Animated.spring(iconScale, { toValue: 1.5, useNativeDriver: true }),
+    Animated.spring(iconScale, { toValue: 1, useNativeDriver: true }),
   ];
   return {
     icon: {
-      fontSize: iconFontSize,
+      transform: [{ scale: iconScale }],
     } as TextStyle,
     come: () => {
       ifs[1].stop();
@@ -40,76 +39,107 @@ const createAnimate = (collapsed: boolean) => {
   };
 };
 
+const getTop = (index: number, collapsed: boolean, active: true | number) => {
+  if (!collapsed) {
+    if (active !== true && active < index) return PX(index * 232 + 280);
+    return PX(index * 232);
+  }
+  return PX(32) * (1 - 1 / (index * index + 1));
+};
+
 export interface DayProps extends HoverScaleProps {
+  activeDay?: number | true;
   collapsed?: boolean;
-  disableHover?: boolean;
   forecast: Forecast;
-  hourOffset?: number;
+  index: number;
+  timezone?: number;
   wingBlank: number;
 }
 
 const Day: FC<DayProps> = ({
+  activeDay = true,
   collapsed = true,
-  disableHover = false,
   forecast,
-  hourOffset = 8,
+  index,
+  timezone = 8,
   wingBlank,
   ...restProps
 }) => {
-  // const animate = useState(() => createAnimate(collapsed))[0];
-  const now = new Date(Date.now() + 1000 * 60 * 60 * hourOffset);
+  const clp = collapsed || activeDay !== index;
+  const animate = useState(() => createAnimate(clp))[0];
+  const now = new Date(Date.now() + 3600000 * (timezone + index * 24));
   const isNight = now.getUTCHours() > 18 || now.getUTCHours() < 7;
   const status = isNight ? forecast.conditionIdNight : forecast.conditionIdDay;
   const icon = WeatherIcon[status];
   const color = WeatherColor[icon];
-  if (useChange(collapsed)) {
+  if (useChange(clp)) {
     LayoutAnimation.spring();
-    // if (collapsed) animate.back();
-    // else animate.come();
+    if (clp) animate.back();
+    else animate.come();
   }
 
-  const containerStyle = mixStyle(styles, { container: true, containerCLP: collapsed });
+  const containerStyle: ViewStyle = {
+    left: wingBlank,
+    position: 'absolute',
+    paddingBottom: PX(32),
+    width: PX.Device.Width - wingBlank * 2,
+    top: getTop(index, collapsed, activeDay),
+    opacity: collapsed ? 1 / (index * index + 1) : 1,
+    transform: collapsed ? [{ scale: 1 - index * 0.04 }] : [],
+  };
   const shadowOpt = {
     color,
     opacity: 0.32,
     border: PX(24),
     height: PX(200),
-    radius: styles.container.borderRadius,
+    radius: styles.card.borderRadius,
     width: PX.Device.Width - wingBlank * 2,
-    style: { position: 'absolute', bottom: PX(-16), scaleX: 0.9, scaleY: 0.9 } as ViewStyle,
+    style: {
+      position: 'absolute',
+      bottom: collapsed ? 0 : PX(-16),
+      transform: [{ scale: 0.9 }],
+    } as ViewStyle,
   };
 
   return (
-    <HoverScale disabled={disableHover} scale={[1, 0.92]} {...restProps}>
-      <View style={[containerStyle, { backgroundColor: color }]}>
-        <BoxShadow setting={shadowOpt} />
-        <View style={mixStyle(styles, { temperature: true, temperatureCLP: collapsed })}>
-          <Text>
-            <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
-            <Text style={styles.tempNight}>{`${forecast.tempNight}°`}</Text>
-          </Text>
+    <View style={containerStyle}>
+      <HoverScale disabled={collapsed} scale={[1, 0.92]} {...restProps}>
+        <View style={mixStyle(styles, { card: true, cardCLP: clp }, { backgroundColor: color })}>
+          <BoxShadow setting={shadowOpt} />
+          <View style={mixStyle(styles, { temperature: true, temperatureCLP: clp })}>
+            <Text>
+              <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
+              <Text style={styles.tempNight}>{`${forecast.tempNight}°`}</Text>
+            </Text>
+          </View>
+          <Icon style={mixStyle(styles, { icon: true, iconCLP: clp }, animate.icon)} type={icon} />
+          <View style={mixStyle(styles, { date: true, dateCLP: clp })}>
+            <Text>
+              <Text style={styles.tempDay}>{now.getUTCDate()}</Text>
+              <Text style={styles.tempNight}>{now.getUTCMonth() + 1}</Text>
+            </Text>
+          </View>
         </View>
-        <Icon style={mixStyle(styles, { icon: true, iconCLP: collapsed })} type={icon} />
-        <View style={mixStyle(styles, { date: true, dateCLP: collapsed })}>
-          <Text>
-            <Text style={styles.tempDay}>{now.getUTCDate()}</Text>
-            <Text style={styles.tempNight}>{now.getUTCMonth()}</Text>
-          </Text>
-        </View>
-      </View>
-    </HoverScale>
+      </HoverScale>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: PX(480),
-    alignItems: 'center',
-    borderRadius: PX(32),
-    marginBottom: PX(32),
-    justifyContent: 'center',
+    height: PX(512),
   } as ViewStyle,
   containerCLP: {
+    height: PX(232),
+  } as ViewStyle,
+  card: {
+    height: PX(480),
+    alignItems: 'center',
+    marginBottom: PX(32),
+    borderRadius: PX(32),
+    justifyContent: 'center',
+  } as ViewStyle,
+  cardCLP: {
     height: PX(200),
   } as ViewStyle,
   icon: {

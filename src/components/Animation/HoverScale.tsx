@@ -3,10 +3,12 @@ import {
   Animated,
   EasingFunction,
   GestureResponderEvent,
+  StyleProp,
   TouchableOpacity,
   TouchableOpacityProps,
   TouchableWithoutFeedback,
   ViewProps,
+  ViewStyle,
 } from 'react-native';
 
 export interface HoverScaleProps extends ViewProps {
@@ -20,6 +22,7 @@ export interface HoverScaleProps extends ViewProps {
   opacity?: false | TouchableOpacityProps;
   scale?: [number, number];
   useNativeDriver?: boolean;
+  wrapperStyle?: StyleProp<ViewStyle>;
 }
 
 const createAnimation = ({
@@ -65,7 +68,14 @@ const createAnimation = ({
   ];
 };
 
-const HoverScale: FC<HoverScaleProps> = ({ children, disabled, opacity, onPress, ...props }) => {
+const HoverScale: FC<HoverScaleProps> = ({
+  children,
+  disabled,
+  opacity,
+  onPress,
+  wrapperStyle,
+  ...props
+}) => {
   const [scale, onPressIn, onPressOut] = disabled
     ? [undefined, undefined, undefined]
     : useState(() => createAnimation(props))[0];
@@ -75,11 +85,22 @@ const HoverScale: FC<HoverScaleProps> = ({ children, disabled, opacity, onPress,
     </Animated.View>
   );
   return opacity ? (
-    <TouchableOpacity {...opacity} onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
+    <TouchableOpacity
+      {...opacity}
+      onPress={onPress}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={wrapperStyle}
+    >
       {children}
     </TouchableOpacity>
   ) : (
-    <TouchableWithoutFeedback onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
+    <TouchableWithoutFeedback
+      onPress={onPress}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={wrapperStyle}
+    >
       {children}
     </TouchableWithoutFeedback>
   );
