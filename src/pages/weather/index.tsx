@@ -1,5 +1,5 @@
 import { PX } from '@/config';
-import connect, { dispatch, StateContext } from '@/models';
+import connect, { dispatch } from '@/models';
 import { WeatherState } from '@/models/weather';
 import { PageContainer } from '@/components/Animation';
 import { FCN } from '@/utils/types';
@@ -10,7 +10,6 @@ import {
   ScrollView,
   ScrollViewProps,
   StatusBar,
-  View,
 } from 'react-native';
 import City from './city';
 
@@ -36,7 +35,7 @@ const Swiper: FC<SwiperProps> = ({ children, onChangePage, width, ...props }) =>
       showsVerticalScrollIndicator={false}
       {...props}
       onScroll={onScroll}
-      style={[{ flex: 1, width }, props.style]}
+      style={[{ flex: 1, width, minHeight: PX.Device.HeightNS }, props.style]}
     >
       {children}
     </ScrollView>
@@ -51,7 +50,7 @@ interface WeatherProps {
 const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData } }) => {
   const pageIndex = useRef(0);
   const [loading, setLoading] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const onRefresh = async () => {
     setLoading(true);
     await dispatch.weather.fetchWeather(pageIndex.current);
@@ -69,9 +68,9 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData } }) => {
   return (
     <PageContainer onRefresh={onRefresh} refreshing={loading} style={{ flex: 1 }}>
       <StatusBar animated barStyle="dark-content" backgroundColor="#fff" />
-      <Swiper onChangePage={onChangePage} scrollEnabled={scrollEnabled} width={PX.VW(100)}>
+      <Swiper onChangePage={onChangePage} scrollEnabled={!collapsed} width={PX.VW(100)}>
         {cities.map((city, index) => (
-          <City city={city} key={city.id} weather={weatherData[index]} />
+          <City city={city} collapsed={collapsed} key={city.id} weather={weatherData[index]} />
         ))}
       </Swiper>
     </PageContainer>

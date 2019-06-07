@@ -2,6 +2,9 @@ import Provider from '@ant-design/react-native/es/provider';
 import { registerHooks } from '@/components/Hooks';
 import { IntlConfig } from '@/components/intl';
 import { WrapperConfig } from '@/components/Wrapper';
+import { LayoutAnimation, UIManager } from 'react-native';
+
+UIManager.setLayoutAnimationEnabledExperimental(true);
 
 export { default as Color } from './color';
 export { default as Font } from './font';

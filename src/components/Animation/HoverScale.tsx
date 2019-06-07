@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import {
   Animated,
   EasingFunction,
+  GestureResponderEvent,
   TouchableOpacity,
   TouchableOpacityProps,
   TouchableWithoutFeedback,
@@ -10,10 +11,12 @@ import {
 
 export interface HoverScaleProps extends ViewProps {
   delay?: [number, number];
+  disabled?: boolean;
   duration?: [number, number];
   easing?: [EasingFunction, EasingFunction] | [EasingFunction] | never[];
-  onHover?: () => void;
-  onUnHover?: () => void;
+  onHover?: (event: GestureResponderEvent) => void;
+  onPress?: (event: GestureResponderEvent) => void;
+  onUnHover?: (event: GestureResponderEvent) => void;
   opacity?: false | TouchableOpacityProps;
   scale?: [number, number];
   useNativeDriver?: boolean;
@@ -27,7 +30,11 @@ const createAnimation = ({
   onHover = () => {},
   onUnHover = () => {},
   useNativeDriver = true,
-}: HoverScaleProps): [Animated.Value, () => void, () => void] => {
+}: HoverScaleProps): [
+  Animated.Value,
+  (event: GestureResponderEvent) => void,
+  (event: GestureResponderEvent) => void
+] => {
   const scale = new Animated.Value(value[0]);
   const ani = Animated.timing(scale, {
     delay: delay[0],
@@ -45,32 +52,34 @@ const createAnimation = ({
   });
   return [
     scale,
-    () => {
+    event => {
       reAni.stop();
       ani.start();
-      onHover();
+      onHover(event);
     },
-    () => {
+    event => {
       ani.stop();
       reAni.start();
-      onUnHover();
+      onUnHover(event);
     },
   ];
 };
 
-const HoverScale: FC<HoverScaleProps> = ({ children, opacity, ...props }) => {
-  const [scale, onPressIn, onPressOut] = useState(() => createAnimation(props))[0];
+const HoverScale: FC<HoverScaleProps> = ({ children, disabled, opacity, onPress, ...props }) => {
+  const [scale, onPressIn, onPressOut] = disabled
+    ? [undefined, undefined, undefined]
+    : useState(() => createAnimation(props))[0];
   children = (
-    <Animated.View {...props} style={[props.style, { transform: [{ scale }] }]}>
+    <Animated.View {...props} style={[props.style, scale && { transform: [{ scale }] }]}>
       {children}
     </Animated.View>
   );
   return opacity ? (
-    <TouchableOpacity {...opacity} onPressIn={onPressIn} onPressOut={onPressOut}>
+    <TouchableOpacity {...opacity} onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
       {children}
     </TouchableOpacity>
   ) : (
-    <TouchableWithoutFeedback onPressIn={onPressIn} onPressOut={onPressOut}>
+    <TouchableWithoutFeedback onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
       {children}
     </TouchableWithoutFeedback>
   );

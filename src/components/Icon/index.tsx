@@ -1,6 +1,6 @@
 import map from '@/assets/icon/map';
 import React from 'react';
-import { StyleProp, Text, TextStyle, TextProps } from 'react-native';
+import { Animated, StyleProp, TextStyle, TextProps } from 'react-native';
 
 export interface IconProps extends TextProps {
   children?: never;
@@ -9,9 +9,9 @@ export interface IconProps extends TextProps {
 }
 
 const Icon: React.FC<IconProps> = ({ children, style, type, ...props }) => (
-  <Text {...props} style={[{ fontFamily: 'iconfont' }, style]}>
+  <Animated.Text {...props} style={[{ fontFamily: 'iconfont' }, style]}>
     {map[type]}
-  </Text>
+  </Animated.Text>
 );
 
 export default Icon;
