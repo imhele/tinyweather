@@ -4,11 +4,11 @@ export interface GlobalState {
   wingBlank: number;
 }
 
-const global = {
+const GlobalModel = {
   state: {
     wingBlank: PX(24),
   } as GlobalState,
   reducers: {},
 };
 
-export default global;
+export default GlobalModel;

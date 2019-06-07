@@ -1,15 +1,24 @@
 import { City, getWeather, searchCity, Weather } from '@/services/weather';
+import { PowerPartial } from '@/utils/types';
 
 export interface WeatherState {
   cities: City[];
-  weather: (Weather | undefined)[];
+  weatherData: (Weather | undefined)[];
 }
 
-const fetchWeather = (city: number) => {
-  return new Promise(resolver => setTimeout(resolver, 2000));
+const fetchWeather = async (
+  pageIndex: number,
+  state?: any,
+): Promise<PowerPartial<WeatherState> | null> => {
+  const weather: WeatherState = state.weather;
+  const response = await getWeather(weather.cities[pageIndex].id);
+  if (!response) return null;
+  const weatherData = [...weather.weatherData];
+  weatherData[pageIndex] = response;
+  return { weatherData };
 };
 
-const weather = {
+const WeatherModel = {
   state: {
     cities: [
       {
@@ -27,11 +36,11 @@ const weather = {
         en: 'Chaoyang District',
       },
     ],
+    weatherData: [],
   } as WeatherState,
-  weather: [],
   reducers: {
     fetchWeather,
   },
 };
 
-export default weather;
+export default WeatherModel;

@@ -50,10 +50,11 @@ function wrapReducers(namespace: string, reducers: any) {
       const nextState = await reducers[key](payload, $STATE);
       const $loading = { ...($STATE.$loading as any)[namespace], model: 0, [key]: 0 };
       const model = Object.entries($loading).some(a => a[1]);
-      return dispatch.setState({
+      dispatch.setState({
         [namespace]: nextState || {},
         $loading: { [namespace]: { [key]: false, model } },
       });
+      return nextState;
     };
   });
   return wrappedReducers;
