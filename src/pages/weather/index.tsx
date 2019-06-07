@@ -57,17 +57,19 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData } }) => {
     await dispatch.weather.fetchWeather(pageIndex.current);
     setLoading(false);
   };
+  const onChangePage = (index: number) => {
+    pageIndex.current = index;
+    if (!weatherData[pageIndex.current] && !loading) onRefresh();
+  };
 
-  if (!weatherData[pageIndex.current]) onRefresh();
+  useState(() => {
+    onChangePage(0);
+  });
 
   return (
     <PageContainer onRefresh={onRefresh} refreshing={loading} style={{ flex: 1 }}>
       <StatusBar animated barStyle="dark-content" backgroundColor="#fff" />
-      <Swiper
-        onChangePage={index => (pageIndex.current = index)}
-        scrollEnabled={scrollEnabled}
-        width={PX.VW(100)}
-      >
+      <Swiper onChangePage={onChangePage} scrollEnabled={scrollEnabled} width={PX.VW(100)}>
         {cities.map(city => (
           <City city={city} key={city.id} />
         ))}
@@ -80,7 +82,7 @@ Weather.navigationOptions = {
   header: null,
 };
 
-export default connect(({ weather, $loading }) => ({
+export default connect(({ weather }) => ({
   weather,
   // loading: $loading.weather.fetchWeather,
 }))<WeatherState>(Weather);

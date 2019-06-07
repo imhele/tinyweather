@@ -1,6 +1,6 @@
 import { HoverScale } from '@/components/Animation';
 import { PX } from '@/config';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 export interface DayProps {
@@ -8,6 +8,7 @@ export interface DayProps {
 }
 
 const Day: FC<DayProps> = ({ style }) => {
+  const [isNight, setNight] = useState(false);
   return (
     <HoverScale scale={[1, 0.92]} style={[styles.container, style]}>
       <View />

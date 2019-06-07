@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   container: {
     width: PX.VW(100),
     position: 'relative',
-    left: -100,
   } as ViewStyle,
   cityNameContainer: {
     lineHeight: 48,
