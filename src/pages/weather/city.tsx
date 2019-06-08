@@ -84,6 +84,12 @@ const defaultForecast: Forecast = {
   windLevelNight: '--',
 };
 
+const geHeight = (days: number, activeDay: number | true, collapsed: boolean) => {
+  if (collapsed) return 120;
+  if (activeDay === true) return days * 116;
+  return days * 116 + 160;
+};
+
 export const getTimeZone = (t?: string) =>
   t && t.search(/\D/) === -1 ? parseInt(t, 10) : undefined;
 
@@ -111,6 +117,7 @@ const City: FC<CityProps> = ({
   const containerStyle: ViewStyle = {
     paddingHorizontal: wingBlank,
     top: collapsed ? cityIndex * 120 : 0,
+    height: geHeight(3, activeDay, collapsed),
     left: collapsed ? cityIndex * PX.VW(-100) : 0,
   };
 
@@ -158,7 +165,6 @@ const City: FC<CityProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: PX.VW(100),
-    minHeight: '100%',
     marginTop: 48 + 16,
   } as ViewStyle,
   cityNameWrapper: {

@@ -19,6 +19,22 @@ const fetchWeather = async (
   return { weatherData };
 };
 
+const bacthFetchWeather = async (
+  pageIndexs: number[],
+  state?: any,
+): Promise<PowerPartial<WeatherState> | null> => {
+  const weather: WeatherState = state.weather;
+  const tasks = pageIndexs.map(i => getWeather(weather.cities[i].id));
+  const response = await Promise.all(tasks);
+  if (!response || !response.length) return null;
+  const weatherData = [...weather.weatherData];
+  pageIndexs.forEach((i, index) => {
+    const res = response[index];
+    if (res) weatherData[i] = res;
+  });
+  return { weatherData };
+};
+
 const example: Weather = {
   timezone: '8',
   forecast: [
@@ -98,6 +114,7 @@ const WeatherModel = {
   } as WeatherState,
   reducers: {
     fetchWeather: throttle(fetchWeather, 100),
+    batchFetchWeather: throttle(bacthFetchWeather, 100),
   },
 };
 

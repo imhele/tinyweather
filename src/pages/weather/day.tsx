@@ -11,7 +11,6 @@ import padStart from 'lodash/padStart';
 import React, { FC, useCallback, useState } from 'react';
 import {
   Animated,
-  LayoutAnimation,
   StyleSheet,
   Text,
   TextStyle,
@@ -21,9 +20,9 @@ import {
 import { BoxShadow } from 'react-native-shadow';
 
 const createAnimate = (collapsed: boolean) => {
-  const iconScale: any = new Animated.Value(collapsed ? 1 : 1.25);
+  const iconScale: any = new Animated.Value(collapsed ? 1 : 1.4);
   const is = [
-    Animated.spring(iconScale, { toValue: 1.25, useNativeDriver: true }),
+    Animated.spring(iconScale, { toValue: 1.4, useNativeDriver: true }),
     Animated.spring(iconScale, { toValue: 1, useNativeDriver: true }),
   ];
   return {
@@ -109,8 +108,6 @@ const Day: FC<DayProps> = ({
 
   const containerStyle: ViewStyle = {
     left: wingBlank,
-    paddingBottom: 16,
-    position: 'absolute',
     width: PX.Device.Width - wingBlank * 2,
     top: getTop(index, collapsed, activeDay),
     opacity: collapsed ? 1 / (index * index + 1) : 1,
@@ -119,7 +116,7 @@ const Day: FC<DayProps> = ({
   const shadowOpt = {
     color,
     border: 12,
-    height: 200,
+    height: 100,
     opacity: 0.32,
     radius: styles.card.borderRadius,
     width: PX.Device.Width - wingBlank * 2,
@@ -131,7 +128,7 @@ const Day: FC<DayProps> = ({
   };
 
   return (
-    <View style={containerStyle}>
+    <View style={[styles.container, containerStyle]}>
       <HoverScale disabled={collapsed} scale={[1, 0.92]} {...restProps}>
         <View style={mixStyle(styles, { card: true, cardCLP: clp }, { backgroundColor: color })}>
           <BoxShadow setting={shadowOpt} />
@@ -176,10 +173,9 @@ const Day: FC<DayProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 256,
-  } as ViewStyle,
-  containerCLP: {
-    height: 116,
+    paddingBottom: 16,
+    overflow: 'hidden',
+    position: 'absolute',
   } as ViewStyle,
   card: {
     height: 260,
@@ -193,8 +189,8 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   icon: {
     left: 0,
-    bottom: 24,
-    fontSize: 100,
+    bottom: 20,
+    fontSize: 80,
     color: Color.W2,
     position: 'relative',
   } as TextStyle,
