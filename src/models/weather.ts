@@ -1,5 +1,6 @@
 import { City, getWeather, searchCity, Weather } from '@/services/weather';
 import { PowerPartial } from '@/utils/types';
+import throttle from 'lodash/throttle';
 
 export interface WeatherState {
   cities: City[];
@@ -96,7 +97,7 @@ const WeatherModel = {
     weatherData: [example],
   } as WeatherState,
   reducers: {
-    fetchWeather,
+    fetchWeather: throttle(fetchWeather, 100),
   },
 };
 

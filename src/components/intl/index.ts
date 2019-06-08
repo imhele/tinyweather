@@ -70,6 +70,7 @@ type FormatText = (id: keyof typeof zhCN, values?: { [k: string]: any }) => stri
 
 interface Format<T = string> {
   (id: keyof typeof zhCN, values?: { [k: string]: any }): T | string;
+  localeDay: typeof localeDay;
   localeName: LocaleType;
   upper: FormatText;
   upperAll: FormatText;
@@ -120,6 +121,14 @@ export const upperAll: FormatText = (id, value) => {
   return message.toUpperCase();
 };
 
+export const localeDay = (date: Date) => {
+  const day = date
+    .toUTCString()
+    .slice(0, 3)
+    .toLowerCase();
+  return format(day as any);
+};
+
 /**
  ** *****************
  ** INIT `intl` START
@@ -129,6 +138,7 @@ format.U = upper;
 format.UA = upperAll;
 format.upper = upper;
 format.upperAll = upperAll;
+format.localeDay = localeDay;
 format.localeName = matchLocale('zh-CN', config.intl.default);
 Hooks.onSetLocale((locale: LocaleType) => {
   setCommonParams({ locale });

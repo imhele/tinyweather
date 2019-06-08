@@ -35,8 +35,8 @@ const Swiper: FC<SwiperProps> = ({ children, onChangePage, scrollRef, width, ...
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       {...props}
-      onScroll={onScroll}
       ref={scrollRef}
+      onScroll={onScroll}
       style={[{ flex: 1, width, minHeight: PX.Device.HeightNS }, props.style]}
     >
       {children}
@@ -56,13 +56,14 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData } }) => {
   const swiperRef = useRef(null as ScrollView | null);
   const [collapsed, setCollapsed] = useState(false);
   const onRefresh = async () => {
+    if (loading) return;
     setLoading(true);
     await dispatch.weather.fetchWeather(pageIndex.current);
     setLoading(false);
   };
   const onChangePage = (index: number) => {
     pageIndex.current = index;
-    if (!weatherData[pageIndex.current] && !loading) onRefresh();
+    if (!weatherData[pageIndex.current]) onRefresh();
   };
   const onClickCity = () => {
     if (!pageIndex.current) return setCollapsed(true);
