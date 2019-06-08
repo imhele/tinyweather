@@ -1,11 +1,12 @@
 import { Color, PX } from '@/config';
 import { HoverScale, PageContainer, ScaleView } from '@/components/Animation';
 import Icon from '@/components/Icon';
-import intl from '@/components/intl';
+import intl, { getLocale } from '@/components/intl';
 import connect, { dispatch } from '@/models';
 import { WeatherState } from '@/models/weather';
 import { useChange } from '@/utils/hooks';
 import { FCN } from '@/utils/types';
+import Modal from '@ant-design/react-native/es/modal';
 import Toast from '@ant-design/react-native/es/toast';
 import React, { FC, Fragment, LegacyRef, useRef, useState } from 'react';
 import {
@@ -110,7 +111,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     setLoading(false);
   };
   const onOpenCity = (event: GestureResponderEvent) => {
-    if (!collapsed) return;
+    if (!collapsed || editing) return;
     const { locationY } = event.nativeEvent;
     const index = Math.floor((locationY - 64) / 120);
     if (index >= cities.length) return;
@@ -119,7 +120,6 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     swiperRef.current.scrollTo({ x: PX.Device.Width * index, y: 0 });
   };
   const onClickCity = async () => {
-    if (editing) return;
     if (pageIndex.current && swiperRef.current) {
       swiperRef.current.scrollTo({ x: 0, y: 0 });
     }
@@ -139,12 +139,12 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     else animate.back();
   }
 
-  const hoverOpacity = { activeOpacity: Color.Opacity[1] };
+  const hoverOpc = { activeOpacity: Color.Opacity[1] };
   const topNavBarWrapStl = [cityStyles.btnWrapper, { top: 16, zIndex: collapsed ? 1 : -1 }];
   const EditTopNavBar = (
     <Fragment>
       <ScaleView style={[topNavBarWrapStl, { left: wingBlank }]} visible={collapsed}>
-        <HoverScale onPress={onClickEdit} opacity={hoverOpacity} style={cityStyles.btnContainer}>
+        <HoverScale onPress={onClickEdit} opacity={hoverOpc} style={cityStyles.btnContainer}>
           <Text style={[cityStyles.btnText, { color: Color.B0 }]}>
             {intl.U(editing ? '完成' : '编辑')}
           </Text>
@@ -155,7 +155,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
         style={[topNavBarWrapStl, { right: wingBlank }]}
       >
         <HoverScale
-          opacity={hoverOpacity}
+          opacity={hoverOpc}
           onPress={() => onAddCity(cities.length)}
           style={[cityStyles.btnContainer, { width: 32, paddingHorizontal: 0 }]}
         >
@@ -166,6 +166,23 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
   );
 
   const swiperMinHeight = Math.max(PX.Device.HeightNS, cities.length * 120 + 64);
+  const dltBtnStl = [cityStyles.btnWrapper, { right: wingBlank, zIndex: editing ? 1 : -1 }];
+  const onDltCity = (index: number) => {
+    if (cities.length < 2) return Toast.info(intl.U('最少城市数量'));
+    const city = cities[index];
+    const cityName = getLocale() === 'zh-CN' ? city.county : city.en;
+    Modal.alert(intl.U('确认'), intl.U('确认删除城市', { cityName }), [
+      { text: intl.U('取消') },
+      { text: intl.U('确认'), onPress: () => dispatch.weather.deleteCity(index) },
+    ]);
+  };
+  const DeleteButton = cities.map((city, i) => (
+    <ScaleView key={city.id} visible={editing} style={[dltBtnStl, { top: i * 120 + 98 }]}>
+      <HoverScale opacity={hoverOpc} onPress={() => onDltCity(i)} style={cityStyles.btnContainer}>
+        <Text style={[cityStyles.btnText, { color: Color.B0 }]}>{intl.U('删除')}</Text>
+      </HoverScale>
+    </ScaleView>
+  ));
 
   return (
     <PageContainer onRefresh={onRefresh} refreshing={loading} style={{ flex: 1 }}>
@@ -175,7 +192,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
         onChangePage={onChangePage}
         scrollEnabled={!collapsed}
         scrollRef={instance => (swiperRef.current = instance)}
-        style={{ minHeight: swiperMinHeight, right: editing ? 64 : 0 }}
+        style={{ minHeight: swiperMinHeight, right: editing ? wingBlank * 2 + 60 : 0 }}
       >
         {cities.map((city, index) => (
           <City
@@ -190,6 +207,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
         ))}
       </Swiper>
       {EditTopNavBar}
+      {DeleteButton}
       {collapsed && (
         <TouchableWithoutFeedback onPress={onOpenCity}>
           <View style={styles.listener} />

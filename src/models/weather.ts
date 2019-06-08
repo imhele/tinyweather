@@ -44,11 +44,12 @@ const bacthFetchWeather = async (
   return { weatherData };
 };
 
-const deleteCity = (index: number, state?: any) => {
+const deleteCity = async (index: number, state?: any) => {
   const weather: WeatherState = state.weather;
   const { cities } = weather;
   cities.splice(index, 1);
   persist({ cities }, weather);
+  LayoutAnimation.spring();
   return { cities: [...cities] };
 };
 
@@ -57,6 +58,7 @@ const addCity = (index: number, state: any) => {
   if (!weather.searchRes[index]) return null;
   const cities = weather.cities.concat(weather.searchRes[index]);
   persist({ cities }, weather);
+  LayoutAnimation.spring();
   return { searchRes: [], cities };
 };
 

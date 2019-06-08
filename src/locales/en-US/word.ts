@@ -14,6 +14,10 @@ const enUS: typeof zhCN = {
   风级: 'wind level',
   编辑: 'edit',
   完成: 'done',
+  删除: 'delete',
+  取消: 'cancel',
+  确认: 'confirm',
+  提示: 'tip',
 };
 
 export default enUS;
