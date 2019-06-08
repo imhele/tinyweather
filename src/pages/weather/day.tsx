@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   icon: {
     left: 0,
-    bottom: 32,
+    bottom: 24,
     fontSize: 72,
     color: Color.W2,
     position: 'relative',

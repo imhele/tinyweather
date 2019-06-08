@@ -93,8 +93,8 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
   const animate = useState(createAnimate)[0];
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const swiperRef = useRef(null as ScrollView | null);
   const [collapsed, setCollapsed] = useState(false);
+  const swiperRef = useRef(null as ScrollView | null);
   const onClickEdit = () => {
     LayoutAnimation.easeInEaseOut();
     setEditing(!editing);
@@ -119,13 +119,13 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     swiperRef.current.scrollTo({ x: PX.Device.Width * index, y: 0 });
   };
   const onClickCity = async () => {
+    if (editing) return;
     if (pageIndex.current && swiperRef.current) {
       swiperRef.current.scrollTo({ x: 0, y: 0 });
     }
     setCollapsed(true);
     const haventFetch = cities.map((_, i) => i).filter(i => !weatherData[i]);
     if (!haventFetch.length) return;
-    return; // TODO
     setLoading(true);
     await dispatch.weather.batchFetchWeather(haventFetch);
     setLoading(false);
@@ -159,7 +159,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
           onPress={() => onAddCity(cities.length)}
           style={[cityStyles.btnContainer, { width: 32, paddingHorizontal: 0 }]}
         >
-          <Icon style={[cityStyles.btnText, { color: Color.B0 }]} type="plus" />
+          <Icon style={[cityStyles.btnText, { color: Color.B0, fontSize: 20 }]} type="plus" />
         </HoverScale>
       </ScaleView>
     </Fragment>

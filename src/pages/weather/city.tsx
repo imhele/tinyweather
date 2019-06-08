@@ -161,6 +161,7 @@ export const styles = StyleSheet.create({
     lineHeight: 32,
     color: Color.W0,
     fontWeight: '500',
+    textAlign: 'center',
     fontSize: Font.$2.FS,
   } as TextStyle,
   btnDesc: {

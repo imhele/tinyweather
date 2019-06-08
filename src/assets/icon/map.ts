@@ -1,5 +1,6 @@
 export default {
   plus: '\ue88e',
+  search: '\ue9a2',
   'sunny-night': '\ue606',
   'cloudy-sunny-night': '\ue607',
   sunny: '\ue608',

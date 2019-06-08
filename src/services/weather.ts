@@ -13,7 +13,7 @@ export interface City {
 export async function searchCity(id: number) {
   return fetch(`${config.ApiPrefix}/weather/city/${id}`, { method: 'POST' })
     .then(resp => resp.json())
-    .catch(() => Toast.offline(intl('网络请求失败')))
+    .catch(() => Toast.offline(intl('网络请求失败')) && null)
     .then(res => res || []) as Promise<City[]>;
 }
 
@@ -85,9 +85,15 @@ export interface Weather {
   forecast: Forecast[];
 }
 
-export async function getWeather(id: number) {
-  return fetch(`${config.ApiPrefix}/weather/query/${id}`, { method: 'POST' })
+export async function getWeather(id: number[]) {
+  return fetch(`${config.ApiPrefix}/weather/query/${id.map(i => `${i}`).join('/')}`, {
+    method: 'POST',
+  })
     .then(resp => resp.json())
-    .catch(() => Toast.offline(intl('网络请求失败')))
-    .then(res => res || null) as Promise<Weather | null>;
+    .catch(() => {
+      Toast.offline(intl('网络请求失败'));
+      // manually refresh after error
+      return id.map(() => ({}));
+    })
+    .then(res => res || null) as Promise<Weather[] | null>;
 }
