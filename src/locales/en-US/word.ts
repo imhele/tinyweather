@@ -12,6 +12,8 @@ const enUS: typeof zhCN = {
   湿度: 'humidity',
   温度: 'temperature',
   风级: 'wind level',
+  编辑: 'edit',
+  完成: 'done',
 };
 
 export default enUS;

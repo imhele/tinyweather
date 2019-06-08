@@ -2,7 +2,7 @@ import Provider from '@ant-design/react-native/es/provider';
 import { registerHooks } from '@/components/Hooks';
 import { IntlConfig } from '@/components/intl';
 import { WrapperConfig } from '@/components/Wrapper';
-import { LayoutAnimation, UIManager } from 'react-native';
+import { UIManager } from 'react-native';
 
 UIManager.setLayoutAnimationEnabledExperimental(true);
 

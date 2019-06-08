@@ -4,7 +4,6 @@ import { Color, Font, PX } from '@/config';
 import connect from '@/models';
 import { City as CityModel, Forecast, Weather } from '@/services/weather';
 import { mixStyle } from '@/utils';
-import { useChange } from '@/utils/hooks';
 import React, { FC, useState } from 'react';
 import {
   Animated,
@@ -34,36 +33,15 @@ const CityName: FC<{
   if (suffix)
     return (
       <Animated.Text numberOfLines={1} style={style}>
-        <Text style={[styles.cityNamePrefix, { color: color[0] }]}>{`${prefix}  `}</Text>
-        <Text style={[styles.cityNameSuffix, { color: color[1] }]}>{suffix}</Text>
+        <Text style={[styles.buttonText, { color: color[0] }]}>{`${prefix}  `}</Text>
+        <Text style={[styles.buttonDesc, { color: color[1] }]}>{suffix}</Text>
       </Animated.Text>
     );
   return (
     <Animated.Text numberOfLines={1} style={style}>
-      <Text style={[styles.cityNamePrefix, { color: color[0] }]}>{prefix}</Text>
+      <Text style={[styles.buttonText, { color: color[0] }]}>{prefix}</Text>
     </Animated.Text>
   );
-};
-
-const createAnimate = () => {
-  const cityNameOpacity: any = new Animated.Value(1);
-  const cnc = [
-    Animated.timing(cityNameOpacity, { toValue: 0 }),
-    Animated.timing(cityNameOpacity, { toValue: 1 }),
-  ];
-  return {
-    cityName: {
-      opacity: cityNameOpacity,
-    } as TextStyle,
-    come: () => {
-      cnc[1].stop();
-      cnc[0].start();
-    },
-    back: () => {
-      cnc[0].stop();
-      cnc[1].start();
-    },
-  };
 };
 
 const defaultForecast: Forecast = {
@@ -95,6 +73,7 @@ export const getTimeZone = (t?: string) =>
 
 export interface CityProps {
   city: CityModel;
+  cityNameStyle?: TextStyle;
   collapsed?: boolean;
   index: number;
   onClickCity?: () => void;
@@ -104,6 +83,7 @@ export interface CityProps {
 
 const City: FC<CityProps> = ({
   city,
+  cityNameStyle,
   collapsed = false,
   index: cityIndex,
   onClickCity,
@@ -113,19 +93,12 @@ const City: FC<CityProps> = ({
   const timezone = getTimeZone(weather.timezone);
   const [activeDay, setActiveDay] = useState(0 as number | true);
   const { forecast = [defaultForecast, defaultForecast, defaultForecast] } = weather;
-  const animate = useState(createAnimate)[0];
   const containerStyle: ViewStyle = {
     paddingHorizontal: wingBlank,
     top: collapsed ? cityIndex * 120 : 0,
     height: geHeight(3, activeDay, collapsed),
     left: collapsed ? cityIndex * PX.VW(-100) : 0,
   };
-
-  if (useChange(collapsed)) {
-    LayoutAnimation.spring();
-    if (collapsed) animate.come();
-    else animate.back();
-  }
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -147,49 +120,50 @@ const City: FC<CityProps> = ({
       <HoverScale
         disabled={collapsed}
         onPress={onClickCity}
-        style={styles.cityNameContainer}
+        style={styles.buttonContainer}
         opacity={{ activeOpacity: collapsed ? 1 : Color.Opacity[1] }}
         wrapperStyle={mixStyle(
           styles,
-          { cityNameWrapper: true, cityNameWrapperCLP: collapsed },
+          { buttonWrapper: true, buttonWrapperCLP: collapsed },
           { left: collapsed ? PX.VW(4) + wingBlank : wingBlank },
         )}
       >
         <CityName city={city} isWhite />
-        <CityName city={city} style={[{ top: -32 }, animate.cityName]} />
+        <CityName city={city} style={[{ top: -32 }, cityNameStyle]} />
       </HoverScale>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+// for `index.tsx`
+export const styles = StyleSheet.create({
   container: {
     width: PX.VW(100),
     marginTop: 48 + 16,
   } as ViewStyle,
-  cityNameWrapper: {
+  buttonWrapper: {
     height: 32,
     maxWidth: '100%',
     position: 'absolute',
     top: 0 - (32 + 48 + 16) / 2,
   } as ViewStyle,
-  cityNameWrapperCLP: {
+  buttonWrapperCLP: {
     top: 50 - 16,
-    maxWidth: PX.VW(40),
+    maxWidth: PX.VW(45),
   } as ViewStyle,
-  cityNameContainer: {
+  buttonContainer: {
     height: 32,
     borderRadius: 16,
     paddingHorizontal: 16,
     backgroundColor: Color.B6,
   } as ViewStyle,
-  cityNamePrefix: {
+  buttonText: {
     lineHeight: 32,
     color: Color.W0,
     fontWeight: '500',
     fontSize: Font.$2.FS,
   } as TextStyle,
-  cityNameSuffix: {
+  buttonDesc: {
     color: Color.W1,
     fontSize: Font.$0.FS,
   } as TextStyle,

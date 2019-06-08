@@ -9,20 +9,13 @@ import { useChange } from '@/utils/hooks';
 import { WeatherColor, WeatherIcon } from '@/utils/weatherIcon';
 import padStart from 'lodash/padStart';
 import React, { FC, useCallback, useState } from 'react';
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { Animated, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { BoxShadow } from 'react-native-shadow';
 
 const createAnimate = (collapsed: boolean) => {
-  const iconScale: any = new Animated.Value(collapsed ? 1 : 1.4);
+  const iconScale: any = new Animated.Value(collapsed ? 1 : 1.2);
   const is = [
-    Animated.spring(iconScale, { toValue: 1.4, useNativeDriver: true }),
+    Animated.spring(iconScale, { toValue: 1.2, useNativeDriver: true }),
     Animated.spring(iconScale, { toValue: 1, useNativeDriver: true }),
   ];
   return {
@@ -99,6 +92,10 @@ const Day: FC<DayProps> = ({
   const isNight = now.getUTCHours() > 18 || now.getUTCHours() < 7;
   const updateAt = useCallback(getUpdateTime, [forecast.updatetime])(forecast.updatetime);
   const status = isNight ? forecast.conditionIdNight : forecast.conditionIdDay;
+  const dayVal = { temp: forecast.tempDay, wind: forecast.windLevelDay };
+  const nightVal = { temp: forecast.tempNight, wind: forecast.windLevelNight };
+  const valueLeft = isNight ? nightVal : dayVal;
+  const valueRight = isNight ? dayVal : nightVal;
   const icon = WeatherIcon[status];
   const color = WeatherColor[icon];
   if (useChange(clp)) {
@@ -134,8 +131,8 @@ const Day: FC<DayProps> = ({
           <BoxShadow setting={shadowOpt} />
           <View style={mixStyle(styles, { temperature: !clp, temperatureCLP: clp })}>
             <Text>
-              <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
-              <Text style={styles.tempNight}>{padStart(`${forecast.tempNight}°`, 3)}</Text>
+              <Text style={styles.valueLeft}>{`${valueLeft.temp}°`}</Text>
+              <Text style={styles.valueRight}>{padStart(`${valueRight.temp}°`, 3)}</Text>
             </Text>
           </View>
           <Icon style={mixStyle(styles, { icon: true, iconCLP: clp }, animate.icon)} type={icon} />
@@ -157,8 +154,8 @@ const Day: FC<DayProps> = ({
               <View style={styles.divider} />
               <View style={styles.detailItem}>
                 <Text style={styles.detailTitle}>
-                  <Text style={styles.tempDay}>{`${forecast.windLevelDay} `}</Text>
-                  <Text style={styles.tempNight}>{forecast.windLevelNight}</Text>
+                  <Text style={styles.valueLeft}>{`${valueLeft.wind} `}</Text>
+                  <Text style={styles.valueRight}>{valueRight.wind}</Text>
                 </Text>
                 <Text style={styles.detailName}>{intl.U('风级')}</Text>
               </View>
@@ -189,15 +186,15 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   icon: {
     left: 0,
-    bottom: 20,
-    fontSize: 80,
+    bottom: 32,
+    fontSize: 72,
     color: Color.W2,
     position: 'relative',
   } as TextStyle,
   iconCLP: {
     bottom: 0,
-    fontSize: 80,
-    left: PX.VW(12),
+    fontSize: 72,
+    left: PX.VW(14),
   } as ViewStyle,
   temperature: {
     left: 0,
@@ -217,11 +214,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   } as ViewStyle,
-  tempDay: {
+  valueLeft: {
     color: Color.W0,
     fontSize: Font.$5.FS,
   } as TextStyle,
-  tempNight: {
+  valueRight: {
     color: Color.W2,
     fontSize: Font.$2.FS,
   } as TextStyle,
