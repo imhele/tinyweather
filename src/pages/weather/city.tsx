@@ -110,7 +110,7 @@ const City: FC<CityProps> = ({
   const animate = useState(createAnimate)[0];
   const containerStyle: ViewStyle = {
     paddingHorizontal: wingBlank,
-    top: collapsed ? cityIndex * PX(240) : 0,
+    top: collapsed ? cityIndex * 120 : 0,
     left: collapsed ? cityIndex * PX.VW(-100) : 0,
   };
 
@@ -159,16 +159,16 @@ const styles = StyleSheet.create({
   container: {
     width: PX.VW(100),
     minHeight: '100%',
-    marginTop: 48 + PX(32),
+    marginTop: 48 + 16,
   } as ViewStyle,
   cityNameWrapper: {
     height: 32,
     maxWidth: '100%',
     position: 'absolute',
-    top: 0 - (32 + 48 + PX(32)) / 2,
+    top: 0 - (32 + 48 + 16) / 2,
   } as ViewStyle,
   cityNameWrapperCLP: {
-    top: PX(100) - 16,
+    top: 50 - 16,
     maxWidth: PX.VW(40),
   } as ViewStyle,
   cityNameContainer: {

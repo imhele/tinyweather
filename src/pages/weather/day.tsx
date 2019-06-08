@@ -43,10 +43,10 @@ const createAnimate = (collapsed: boolean) => {
 
 const getTop = (index: number, collapsed: boolean, active: true | number) => {
   if (!collapsed) {
-    if (active !== true && active < index) return PX(index * 232 + 320);
-    return PX(index * 232);
+    if (active !== true && active < index) return index * 116 + 160;
+    return index * 116;
   }
-  return PX(32) * (1 - 1 / (index * index + 1));
+  return 16 * (1 - 1 / (index * index + 1));
 };
 
 const getLocaleFullDay = (date: Date) => {
@@ -109,8 +109,8 @@ const Day: FC<DayProps> = ({
 
   const containerStyle: ViewStyle = {
     left: wingBlank,
+    paddingBottom: 16,
     position: 'absolute',
-    paddingBottom: PX(32),
     width: PX.Device.Width - wingBlank * 2,
     top: getTop(index, collapsed, activeDay),
     opacity: collapsed ? 1 / (index * index + 1) : 1,
@@ -118,14 +118,14 @@ const Day: FC<DayProps> = ({
   };
   const shadowOpt = {
     color,
+    border: 12,
+    height: 200,
     opacity: 0.32,
-    border: PX(24),
-    height: PX(200),
     radius: styles.card.borderRadius,
     width: PX.Device.Width - wingBlank * 2,
     style: {
       position: 'absolute',
-      bottom: collapsed ? 0 : PX(-16),
+      bottom: collapsed ? 0 : -8,
       transform: [{ scale: 0.9 }],
     } as ViewStyle,
   };
@@ -176,46 +176,46 @@ const Day: FC<DayProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: PX(512),
+    height: 256,
   } as ViewStyle,
   containerCLP: {
-    height: PX(232),
+    height: 116,
   } as ViewStyle,
   card: {
-    height: PX(520),
+    height: 260,
+    marginBottom: 16,
+    borderRadius: 16,
     alignItems: 'center',
-    marginBottom: PX(32),
-    borderRadius: PX(32),
     justifyContent: 'center',
   } as ViewStyle,
   cardCLP: {
-    height: PX(200),
+    height: 100,
   } as ViewStyle,
   icon: {
     left: 0,
-    bottom: PX(48),
+    bottom: 24,
+    fontSize: 100,
     color: Color.W2,
-    fontSize: PX(200),
     position: 'relative',
   } as TextStyle,
   iconCLP: {
     bottom: 0,
+    fontSize: 80,
     left: PX.VW(12),
-    fontSize: PX(160),
   } as ViewStyle,
   temperature: {
     left: 0,
+    height: 44,
+    bottom: 56,
     width: '33%',
-    height: PX(88),
-    bottom: PX(112),
     position: 'absolute',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
   } as ViewStyle,
   temperatureCLP: {
+    height: 100,
     right: PX.VW(4),
-    height: PX(200),
     position: 'absolute',
     alignItems: 'center',
     flexDirection: 'row',
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
     fontSize: Font.$2.FS,
   } as TextStyle,
   date: {
+    top: 8,
     left: 0,
-    top: PX(16),
     minWidth: '100%',
     position: 'absolute',
     alignItems: 'center',
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   dateCLP: {
     top: 0,
+    height: 100,
     minWidth: 0,
     left: PX.VW(4),
-    height: PX(200),
     alignItems: 'flex-start',
   } as ViewStyle,
   dateHide: {
@@ -257,23 +257,23 @@ const styles = StyleSheet.create({
     fontSize: Font.$1.FS,
   } as TextStyle,
   detailContainer: {
+    bottom: 8,
     width: '100%',
-    bottom: PX(16),
     position: 'absolute',
   } as ViewStyle,
   detailContainerCLP: {
     bottom: -200,
   } as TextStyle,
   detail: {
+    height: 80,
     width: '100%',
-    height: PX(160),
     alignItems: 'center',
     flexDirection: 'row',
   } as ViewStyle,
   divider: {
+    top: 4, // adjust
     width: 2,
-    top: PX(8), // adjust
-    height: PX(72),
+    height: 36,
     borderRadius: 1,
     backgroundColor: Color.W4,
   } as ViewStyle,
@@ -282,21 +282,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   } as ViewStyle,
   detailTitle: {
+    lineHeight: 44,
     color: Color.W0,
-    lineHeight: PX(88),
     textAlign: 'center',
     fontSize: Font.$5.FS,
   } as TextStyle,
   detailName: {
+    lineHeight: 20,
     color: Color.W1,
-    lineHeight: PX(40),
     textAlign: 'center',
     fontSize: Font.$1.FS,
   } as TextStyle,
   udpateTime: {
+    marginTop: 4,
+    lineHeight: 16,
     color: Color.W2,
-    marginTop: PX(8),
-    lineHeight: PX(32),
     textAlign: 'center',
     fontSize: Font.$0.FS,
   } as TextStyle,

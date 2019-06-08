@@ -6,7 +6,7 @@ export interface GlobalState {
 
 const GlobalModel = {
   state: {
-    wingBlank: PX(24),
+    wingBlank: 12,
   } as GlobalState,
   reducers: {},
 };
