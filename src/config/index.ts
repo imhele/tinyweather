@@ -12,9 +12,7 @@ export { default as PX } from './pixel';
 export { default as Ratio } from './ratio';
 
 const intl: IntlConfig = {
-  default: 'en-US',
-  deviceInfo: false,
-  storageKey: false,
+  default: 'zh-CN',
 };
 
 const wrapper: WrapperConfig = {

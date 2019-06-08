@@ -9,6 +9,7 @@ import React, { FC, useState } from 'react';
 import {
   Animated,
   LayoutAnimation,
+  StyleProp,
   StyleSheet,
   Text,
   TextStyle,
@@ -17,9 +18,14 @@ import {
 } from 'react-native';
 import Day from './day';
 
-const CityName: FC<{ city: CityModel }> = ({ city }) => {
+const CityName: FC<{
+  city: CityModel;
+  isWhite?: boolean;
+  style?: StyleProp<TextStyle>;
+}> = ({ city, isWhite, style }) => {
   let prefix = city.en;
   let suffix: string | undefined;
+  const color = isWhite ? [Color.W0, Color.W1] : [Color.B0, Color.B1];
   if (getLocale() === 'zh-CN') {
     prefix = city.county;
     if (city.county !== city.city) suffix = city.city;
@@ -27,27 +33,27 @@ const CityName: FC<{ city: CityModel }> = ({ city }) => {
   }
   if (suffix)
     return (
-      <Text numberOfLines={1}>
-        <Text style={styles.cityName}>{`${prefix}  `}</Text>
-        <Text style={styles.cityNameSuffix}>{suffix}</Text>
-      </Text>
+      <Animated.Text numberOfLines={1} style={style}>
+        <Text style={[styles.cityNamePrefix, { color: color[0] }]}>{`${prefix}  `}</Text>
+        <Text style={[styles.cityNameSuffix, { color: color[1] }]}>{suffix}</Text>
+      </Animated.Text>
     );
   return (
-    <Text numberOfLines={1}>
-      <Text style={styles.cityName}>{prefix}</Text>
-    </Text>
+    <Animated.Text numberOfLines={1} style={style}>
+      <Text style={[styles.cityNamePrefix, { color: color[0] }]}>{prefix}</Text>
+    </Animated.Text>
   );
 };
 
 const createAnimate = () => {
-  const cityNameColor: any = new Animated.Value(1);
+  const cityNameOpacity: any = new Animated.Value(1);
   const cnc = [
-    Animated.timing(cityNameColor, { toValue: 1.2, useNativeDriver: true }),
-    Animated.timing(cityNameColor, { toValue: 1, useNativeDriver: true }),
+    Animated.timing(cityNameOpacity, { toValue: 0 }),
+    Animated.timing(cityNameOpacity, { toValue: 1 }),
   ];
   return {
     cityName: {
-      // color: cityNameColor,
+      opacity: cityNameOpacity,
     } as TextStyle,
     come: () => {
       cnc[1].stop();
@@ -101,7 +107,7 @@ const City: FC<CityProps> = ({
   const timezone = getTimeZone(weather.timezone);
   const [activeDay, setActiveDay] = useState(0 as number | true);
   const { forecast = [defaultForecast, defaultForecast, defaultForecast] } = weather;
-  const animate = useState(() => createAnimate())[0];
+  const animate = useState(createAnimate)[0];
   const containerStyle: ViewStyle = {
     paddingHorizontal: wingBlank,
     top: collapsed ? cityIndex * PX(240) : 0,
@@ -124,7 +130,11 @@ const City: FC<CityProps> = ({
           activeDay={activeDay}
           collapsed={collapsed}
           forecast={forecast[index]}
-          onPress={() => collapsed || setActiveDay(index === activeDay || index)}
+          onPress={() => {
+            if (collapsed) return;
+            LayoutAnimation.spring();
+            setActiveDay(index === activeDay || index);
+          }}
         />
       ))}
       <HoverScale
@@ -135,11 +145,11 @@ const City: FC<CityProps> = ({
         wrapperStyle={mixStyle(
           styles,
           { cityNameWrapper: true, cityNameWrapperCLP: collapsed },
-          { left: wingBlank },
-          animate.cityName,
+          { left: collapsed ? PX.VW(4) + wingBlank : wingBlank },
         )}
       >
-        <CityName city={city} />
+        <CityName city={city} isWhite />
+        <CityName city={city} style={[{ top: -32 }, animate.cityName]} />
       </HoverScale>
     </View>
   );
@@ -151,13 +161,6 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     marginTop: 48 + PX(32),
   } as ViewStyle,
-  cityNameContainer: {
-    height: 32,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    backgroundColor: Color.B6,
-  } as ViewStyle,
   cityNameWrapper: {
     height: 32,
     maxWidth: '100%',
@@ -166,15 +169,22 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   cityNameWrapperCLP: {
     top: PX(100) - 16,
-    maxWidth: PX.VW(45),
+    maxWidth: PX.VW(40),
   } as ViewStyle,
-  cityName: {
-    color: Color.B0,
+  cityNameContainer: {
+    height: 32,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    backgroundColor: Color.B6,
+  } as ViewStyle,
+  cityNamePrefix: {
+    lineHeight: 32,
+    color: Color.W0,
     fontWeight: '500',
     fontSize: Font.$2.FS,
   } as TextStyle,
   cityNameSuffix: {
-    color: Color.B1,
+    color: Color.W1,
     fontSize: Font.$0.FS,
   } as TextStyle,
 });

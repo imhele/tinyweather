@@ -91,7 +91,7 @@ const WeatherModel = {
         province: '北京市',
         city: '北京市',
         county: '朝阳区',
-        en: 'Chaoyang District District',
+        en: 'Chaoyang District',
       },
     ],
     weatherData: [example],

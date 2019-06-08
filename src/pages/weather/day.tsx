@@ -103,7 +103,6 @@ const Day: FC<DayProps> = ({
   const icon = WeatherIcon[status];
   const color = WeatherColor[icon];
   if (useChange(clp)) {
-    LayoutAnimation.spring();
     if (clp) animate.back();
     else animate.come();
   }

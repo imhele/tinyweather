@@ -18,13 +18,14 @@ const Device = {
 };
 
 const PixelRatio = {
-  Default: 2,
+  DefaultWidth: 375,
   Device: ReactNative.PixelRatio.get(),
   Scaled: 1,
 };
 
 Device.HeightNS = Device.Height - Device.StatusBarHeight;
-PixelRatio.Scaled = (PixelRatio.Device * PixelRatio.Scaled) / Math.pow(PixelRatio.Default, 2);
+PixelRatio.Scaled =
+  (Device.Width * PixelRatio.Scaled) / (PixelRatio.DefaultWidth * PixelRatio.Device);
 
 const PX: ((size: number) => number) & {
   Device: typeof Device;
