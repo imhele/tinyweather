@@ -3,8 +3,18 @@ import { getLocale } from '@/components/intl';
 import { Color, Font, PX } from '@/config';
 import connect from '@/models';
 import { City as CityModel, Forecast, Weather } from '@/services/weather';
+import { mixStyle } from '@/utils';
+import { useChange } from '@/utils/hooks';
 import React, { FC, useState } from 'react';
-import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  Animated,
+  LayoutAnimation,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Day from './day';
 
 const CityName: FC<{ city: CityModel }> = ({ city }) => {
@@ -27,6 +37,27 @@ const CityName: FC<{ city: CityModel }> = ({ city }) => {
       <Text style={styles.cityName}>{prefix}</Text>
     </Text>
   );
+};
+
+const createAnimate = () => {
+  const cityNameColor: any = new Animated.Value(1);
+  const cnc = [
+    Animated.timing(cityNameColor, { toValue: 1.2, useNativeDriver: true }),
+    Animated.timing(cityNameColor, { toValue: 1, useNativeDriver: true }),
+  ];
+  return {
+    cityName: {
+      // color: cityNameColor,
+    } as TextStyle,
+    come: () => {
+      cnc[1].stop();
+      cnc[0].start();
+    },
+    back: () => {
+      cnc[0].stop();
+      cnc[1].start();
+    },
+  };
 };
 
 const defaultForecast: Forecast = {
@@ -70,23 +101,21 @@ const City: FC<CityProps> = ({
   const timezone = getTimeZone(weather.timezone);
   const [activeDay, setActiveDay] = useState(0 as number | true);
   const { forecast = [defaultForecast, defaultForecast, defaultForecast] } = weather;
+  const animate = useState(() => createAnimate())[0];
   const containerStyle: ViewStyle = {
     paddingHorizontal: wingBlank,
     top: collapsed ? cityIndex * PX(240) : 0,
     left: collapsed ? cityIndex * PX.VW(-100) : 0,
   };
 
+  if (useChange(collapsed)) {
+    LayoutAnimation.spring();
+    if (collapsed) animate.come();
+    else animate.back();
+  }
+
   return (
     <View style={[styles.container, containerStyle]}>
-      <HoverScale
-        disabled={collapsed}
-        onPress={onClickCity}
-        style={styles.cityNameContainer}
-        opacity={{ activeOpacity: Color.Opacity[1] }}
-        wrapperStyle={[styles.cityNameWrapper, { left: wingBlank }]}
-      >
-        <CityName city={city} />
-      </HoverScale>
       {[2, 1, 0].map(index => (
         <Day
           key={index}
@@ -98,6 +127,20 @@ const City: FC<CityProps> = ({
           onPress={() => collapsed || setActiveDay(index === activeDay || index)}
         />
       ))}
+      <HoverScale
+        disabled={collapsed}
+        onPress={onClickCity}
+        style={styles.cityNameContainer}
+        opacity={{ activeOpacity: collapsed ? 1 : Color.Opacity[1] }}
+        wrapperStyle={mixStyle(
+          styles,
+          { cityNameWrapper: true, cityNameWrapperCLP: collapsed },
+          { left: wingBlank },
+          animate.cityName,
+        )}
+      >
+        <CityName city={city} />
+      </HoverScale>
     </View>
   );
 };
@@ -120,6 +163,10 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     position: 'absolute',
     top: 0 - (32 + 48 + PX(32)) / 2,
+  } as ViewStyle,
+  cityNameWrapperCLP: {
+    top: PX(100) - 16,
+    maxWidth: PX.VW(45),
   } as ViewStyle,
   cityName: {
     color: Color.B0,

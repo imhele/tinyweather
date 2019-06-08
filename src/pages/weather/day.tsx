@@ -22,7 +22,7 @@ import { BoxShadow } from 'react-native-shadow';
 
 const createAnimate = (collapsed: boolean) => {
   const iconScale: any = new Animated.Value(collapsed ? 1 : 1.25);
-  const ifs = [
+  const is = [
     Animated.spring(iconScale, { toValue: 1.25, useNativeDriver: true }),
     Animated.spring(iconScale, { toValue: 1, useNativeDriver: true }),
   ];
@@ -31,12 +31,12 @@ const createAnimate = (collapsed: boolean) => {
       transform: [{ scale: iconScale }],
     } as TextStyle,
     come: () => {
-      ifs[1].stop();
-      ifs[0].start();
+      is[1].stop();
+      is[0].start();
     },
     back: () => {
-      ifs[0].stop();
-      ifs[1].start();
+      is[0].stop();
+      is[1].start();
     },
   };
 };
