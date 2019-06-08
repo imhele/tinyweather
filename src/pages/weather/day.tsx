@@ -7,6 +7,7 @@ import { Forecast } from '@/services/weather';
 import { mixStyle } from '@/utils';
 import { useChange } from '@/utils/hooks';
 import { WeatherColor, WeatherIcon } from '@/utils/weatherIcon';
+import padStart from 'lodash/padStart';
 import React, { FC, useCallback, useState } from 'react';
 import {
   Animated,
@@ -42,7 +43,7 @@ const createAnimate = (collapsed: boolean) => {
 
 const getTop = (index: number, collapsed: boolean, active: true | number) => {
   if (!collapsed) {
-    if (active !== true && active < index) return PX(index * 232 + 280);
+    if (active !== true && active < index) return PX(index * 232 + 320);
     return PX(index * 232);
   }
   return PX(32) * (1 - 1 / (index * index + 1));
@@ -67,9 +68,9 @@ const getUpdateTime = (str: string) => {
     date.setFullYear(parseInt(year, 10));
     date.setMonth(parseInt(month, 10) - 1);
     date.setDate(parseInt(day, 10));
-    if (!date || date.toString() === 'Invalid Date') return intl.upper('更新时间未知');
+    if (!date || date.toString() === 'Invalid Date') return intl.U('更新时间未知');
     const time = `${getLocaleFullDay(date)} ${arr[1]}`;
-    return intl.upper('更新时间', { time });
+    return intl.U('更新时间', { time });
   } catch {
     return '';
   }
@@ -135,18 +136,39 @@ const Day: FC<DayProps> = ({
       <HoverScale disabled={collapsed} scale={[1, 0.92]} {...restProps}>
         <View style={mixStyle(styles, { card: true, cardCLP: clp }, { backgroundColor: color })}>
           <BoxShadow setting={shadowOpt} />
-          <View style={mixStyle(styles, { temperature: true, temperatureCLP: clp })}>
+          <View style={mixStyle(styles, { temperature: !clp, temperatureCLP: clp })}>
             <Text>
               <Text style={styles.tempDay}>{`${forecast.tempDay}°`}</Text>
-              <Text style={styles.tempNight}>{`${forecast.tempNight}°`}</Text>
+              <Text style={styles.tempNight}>{padStart(`${forecast.tempNight}°`, 3)}</Text>
             </Text>
           </View>
           <Icon style={mixStyle(styles, { icon: true, iconCLP: clp }, animate.icon)} type={icon} />
-          <View style={mixStyle(styles, { date: true, dateCLP: clp })}>
+          <View style={mixStyle(styles, { date: true, dateCLP: clp, dateHide: collapsed })}>
             <Text style={styles.localeDay}>{intl.localeDay(now)}</Text>
             <Text style={styles.fullDay}>{getLocaleFullDay(now)}</Text>
           </View>
-          <Text style={mixStyle(styles, { udpateTime: true, udpateTimeCLP: clp })}>{updateAt}</Text>
+          <View style={mixStyle(styles, { detailContainer: true, detailContainerCLP: clp })}>
+            <View style={styles.detail}>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailTitle}>&nbsp;</Text>
+                <Text style={styles.detailName}>{intl.U('温度')}</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.detailItem}>
+                <Text style={styles.detailTitle}>{`${forecast.humidity}%`}</Text>
+                <Text style={styles.detailName}>{intl.U('湿度')}</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.detailItem}>
+                <Text style={styles.detailTitle}>
+                  <Text style={styles.tempDay}>{`${forecast.windLevelDay} `}</Text>
+                  <Text style={styles.tempNight}>{forecast.windLevelNight}</Text>
+                </Text>
+                <Text style={styles.detailName}>{intl.U('风级')}</Text>
+              </View>
+            </View>
+            <Text style={styles.udpateTime}>{updateAt}</Text>
+          </View>
         </View>
       </HoverScale>
     </View>
@@ -161,7 +183,7 @@ const styles = StyleSheet.create({
     height: PX(232),
   } as ViewStyle,
   card: {
-    height: PX(480),
+    height: PX(520),
     alignItems: 'center',
     marginBottom: PX(32),
     borderRadius: PX(32),
@@ -172,23 +194,33 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   icon: {
     left: 0,
+    bottom: PX(48),
     color: Color.W2,
     fontSize: PX(200),
     position: 'relative',
   } as TextStyle,
   iconCLP: {
+    bottom: 0,
     left: PX.VW(12),
     fontSize: PX(160),
   } as ViewStyle,
   temperature: {
-    height: PX(480),
-    right: PX.VW(4),
+    left: 0,
+    width: '33%',
+    height: PX(88),
+    bottom: PX(112),
     position: 'absolute',
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   } as ViewStyle,
   temperatureCLP: {
+    right: PX.VW(4),
     height: PX(200),
+    position: 'absolute',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   } as ViewStyle,
   tempDay: {
     color: Color.W0,
@@ -213,6 +245,10 @@ const styles = StyleSheet.create({
     height: PX(200),
     alignItems: 'flex-start',
   } as ViewStyle,
+  dateHide: {
+    left: PX.VW(-50),
+    position: 'absolute',
+  } as ViewStyle,
   localeDay: {
     color: Color.W0,
     fontSize: Font.$3.FS,
@@ -221,15 +257,49 @@ const styles = StyleSheet.create({
     color: Color.W2,
     fontSize: Font.$1.FS,
   } as TextStyle,
-  udpateTime: {
+  detailContainer: {
+    width: '100%',
     bottom: PX(16),
-    color: Color.W1,
     position: 'absolute',
-    fontSize: Font.$0.FS,
-    lineHeight: Font.$0.LH,
+  } as ViewStyle,
+  detailContainerCLP: {
+    bottom: -200,
   } as TextStyle,
-  udpateTimeCLP: {
-    bottom: -100,
+  detail: {
+    width: '100%',
+    height: PX(160),
+    alignItems: 'center',
+    flexDirection: 'row',
+  } as ViewStyle,
+  divider: {
+    width: 2,
+    top: PX(8), // adjust
+    height: PX(72),
+    borderRadius: 1,
+    backgroundColor: Color.W4,
+  } as ViewStyle,
+  detailItem: {
+    flex: 1,
+    flexDirection: 'column',
+  } as ViewStyle,
+  detailTitle: {
+    color: Color.W0,
+    lineHeight: PX(88),
+    textAlign: 'center',
+    fontSize: Font.$5.FS,
+  } as TextStyle,
+  detailName: {
+    color: Color.W1,
+    lineHeight: PX(40),
+    textAlign: 'center',
+    fontSize: Font.$1.FS,
+  } as TextStyle,
+  udpateTime: {
+    color: Color.W2,
+    marginTop: PX(8),
+    lineHeight: PX(32),
+    textAlign: 'center',
+    fontSize: Font.$0.FS,
   } as TextStyle,
 });
 

@@ -9,6 +9,9 @@ const enUS: typeof zhCN = {
   sat: 'Saturday',
   sun: 'Sunday',
   搜索: 'search',
+  湿度: 'humidity',
+  温度: 'temperature',
+  风级: 'wind level',
 };
 
 export default enUS;
