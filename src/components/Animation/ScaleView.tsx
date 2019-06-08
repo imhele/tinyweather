@@ -3,6 +3,8 @@ import React, { FC, useState } from 'react';
 import { Animated, ViewProps } from 'react-native';
 
 export interface ScaleViewProps extends ViewProps {
+  afterHide?: () => void;
+  afterShow?: () => void;
   delay?: [number, number];
   opacity?: [number, number];
   scale?: [number, number];
@@ -11,6 +13,8 @@ export interface ScaleViewProps extends ViewProps {
 }
 
 const createAnimation = ({
+  afterHide,
+  afterShow,
   delay = [0, 0],
   opacity: opacityVal = [0, 1],
   scale: scaleVal = [0, 1],
@@ -49,16 +53,20 @@ const createAnimation = ({
     },
     show: () => {
       reAni.stop();
-      ani.start();
+      if (!afterShow) return ani.start();
+      ani.start(e => e.finished && afterShow());
     },
     hide: () => {
       ani.stop();
-      reAni.start();
+      if (!afterHide) return reAni.start();
+      reAni.start(e => e.finished && afterHide());
     },
   };
 };
 
 const ScaleView: FC<ScaleViewProps> = ({
+  afterHide,
+  afterShow,
   children,
   delay,
   opacity,
@@ -68,7 +76,7 @@ const ScaleView: FC<ScaleViewProps> = ({
   ...restProps
 }) => {
   const animate = useState(() => {
-    const res = createAnimation({ delay, opacity, scale, useNativeDriver });
+    const res = createAnimation({ afterHide, afterShow, delay, opacity, scale, useNativeDriver });
     if (visible) res.show();
     return res;
   })[0];

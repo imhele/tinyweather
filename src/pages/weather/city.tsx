@@ -33,13 +33,13 @@ const CityName: FC<{
   if (suffix)
     return (
       <Animated.Text numberOfLines={1} style={style}>
-        <Text style={[styles.buttonText, { color: color[0] }]}>{`${prefix}  `}</Text>
-        <Text style={[styles.buttonDesc, { color: color[1] }]}>{suffix}</Text>
+        <Text style={[styles.btnText, { color: color[0] }]}>{`${prefix}  `}</Text>
+        <Text style={[styles.btnDesc, { color: color[1] }]}>{suffix}</Text>
       </Animated.Text>
     );
   return (
     <Animated.Text numberOfLines={1} style={style}>
-      <Text style={[styles.buttonText, { color: color[0] }]}>{prefix}</Text>
+      <Text style={[styles.btnText, { color: color[0] }]}>{prefix}</Text>
     </Animated.Text>
   );
 };
@@ -120,11 +120,11 @@ const City: FC<CityProps> = ({
       <HoverScale
         disabled={collapsed}
         onPress={onClickCity}
-        style={styles.buttonContainer}
+        style={styles.btnContainer}
         opacity={{ activeOpacity: collapsed ? 1 : Color.Opacity[1] }}
         wrapperStyle={mixStyle(
           styles,
-          { buttonWrapper: true, buttonWrapperCLP: collapsed },
+          { btnWrapper: true, btnWrapperCLP: collapsed },
           { left: collapsed ? PX.VW(4) + wingBlank : wingBlank },
         )}
       >
@@ -141,29 +141,29 @@ export const styles = StyleSheet.create({
     width: PX.VW(100),
     marginTop: 48 + 16,
   } as ViewStyle,
-  buttonWrapper: {
+  btnWrapper: {
     height: 32,
     maxWidth: '100%',
     position: 'absolute',
     top: 0 - (32 + 48 + 16) / 2,
   } as ViewStyle,
-  buttonWrapperCLP: {
+  btnWrapperCLP: {
     top: 50 - 16,
     maxWidth: PX.VW(45),
   } as ViewStyle,
-  buttonContainer: {
+  btnContainer: {
     height: 32,
     borderRadius: 16,
     paddingHorizontal: 16,
     backgroundColor: Color.B6,
   } as ViewStyle,
-  buttonText: {
+  btnText: {
     lineHeight: 32,
     color: Color.W0,
     fontWeight: '500',
     fontSize: Font.$2.FS,
   } as TextStyle,
-  buttonDesc: {
+  btnDesc: {
     color: Color.W1,
     fontSize: Font.$0.FS,
   } as TextStyle,

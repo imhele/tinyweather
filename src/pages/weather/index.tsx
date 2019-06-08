@@ -95,15 +95,19 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
   const [loading, setLoading] = useState(false);
   const swiperRef = useRef(null as ScrollView | null);
   const [collapsed, setCollapsed] = useState(false);
+  const onClickEdit = () => {
+    LayoutAnimation.easeInEaseOut();
+    setEditing(!editing);
+  };
+  const onChangePage = (index: number) => {
+    pageIndex.current = index;
+    if (!weatherData[pageIndex.current]) onRefresh();
+  };
   const onRefresh = async () => {
     if (loading) return;
     setLoading(true);
     await dispatch.weather.fetchWeather(pageIndex.current);
     setLoading(false);
-  };
-  const onChangePage = (index: number) => {
-    pageIndex.current = index;
-    if (!weatherData[pageIndex.current]) onRefresh();
   };
   const onOpenCity = (event: GestureResponderEvent) => {
     if (!collapsed) return;
@@ -136,34 +140,32 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
   }
 
   const hoverOpacity = { activeOpacity: Color.Opacity[1] };
-  const topNavBarWrapStl = [
-    [cityStyles.buttonWrapper, { left: wingBlank, top: 16 }],
-    [cityStyles.buttonWrapper, { right: wingBlank, top: 16 }],
-  ];
+  const topNavBarWrapStl = [cityStyles.btnWrapper, { top: 16, zIndex: collapsed ? 1 : -1 }];
   const EditTopNavBar = (
     <Fragment>
-      <ScaleView style={topNavBarWrapStl[0]} visible={collapsed}>
-        <HoverScale
-          style={cityStyles.buttonContainer}
-          opacity={hoverOpacity}
-          onPress={() => setEditing(!editing)}
-        >
-          <Text style={[cityStyles.buttonText, { color: Color.B0 }]}>
+      <ScaleView style={[topNavBarWrapStl, { left: wingBlank }]} visible={collapsed}>
+        <HoverScale onPress={onClickEdit} opacity={hoverOpacity} style={cityStyles.btnContainer}>
+          <Text style={[cityStyles.btnText, { color: Color.B0 }]}>
             {intl.U(editing ? '完成' : '编辑')}
           </Text>
         </HoverScale>
       </ScaleView>
-      <ScaleView style={topNavBarWrapStl[1]} visible={collapsed && cities.length < 7}>
+      <ScaleView
+        visible={collapsed && cities.length < 7}
+        style={[topNavBarWrapStl, { right: wingBlank }]}
+      >
         <HoverScale
           opacity={hoverOpacity}
           onPress={() => onAddCity(cities.length)}
-          style={[cityStyles.buttonContainer, { width: 32, paddingHorizontal: 0 }]}
+          style={[cityStyles.btnContainer, { width: 32, paddingHorizontal: 0 }]}
         >
-          <Icon style={[cityStyles.buttonText, { color: Color.B0 }]} type="plus" />
+          <Icon style={[cityStyles.btnText, { color: Color.B0 }]} type="plus" />
         </HoverScale>
       </ScaleView>
     </Fragment>
   );
+
+  const swiperMinHeight = Math.max(PX.Device.HeightNS, cities.length * 120 + 64);
 
   return (
     <PageContainer onRefresh={onRefresh} refreshing={loading} style={{ flex: 1 }}>
@@ -173,7 +175,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
         onChangePage={onChangePage}
         scrollEnabled={!collapsed}
         scrollRef={instance => (swiperRef.current = instance)}
-        style={{ minHeight: Math.max(PX.Device.HeightNS, cities.length * 120 + 64) }}
+        style={{ minHeight: swiperMinHeight, right: editing ? 64 : 0 }}
       >
         {cities.map((city, index) => (
           <City
