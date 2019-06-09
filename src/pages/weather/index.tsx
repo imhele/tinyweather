@@ -151,6 +151,7 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     onChangePage(0);
     Hooks.afterAddCity(() => {
       setLoading(true);
+      setEditing(false);
       setCollapsed(false);
       dispatch.weather.fetchWeather(0).then(() => setLoading(false));
     });
