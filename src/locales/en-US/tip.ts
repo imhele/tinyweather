@@ -9,6 +9,8 @@ const enUS: typeof zhCN = {
   最少城市数量: 'keep at least one city',
   最多城市数量: 'add up to <%= num %> cities',
   确认删除城市: 'city <%= cityName %> will be deleted',
+  确认添加城市: 'add <%= cityName %> to the list',
+  搜索城市: 'search city',
 };
 
 export default enUS;

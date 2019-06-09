@@ -4,6 +4,7 @@ import { getLocale } from '@/components/intl';
 // import { Color, Font } from '@/config';
 // import HomePage from '@/pages/home';
 // import MinePage from '@/pages/mine';
+import SearchPage from '@/pages/search';
 import WeatherPage from '@/pages/weather';
 import { AnyComponent, FCN } from '@/utils/types';
 import React from 'react';
@@ -18,7 +19,7 @@ const CommonPages: { [K: string]: AnyComponent } = {};
 const initialRouteParams = {
   locale: getLocale(),
 };
-const [weather] = [WeatherPage].map((Page: FCN<any, any>) => {
+const [search, weather] = [SearchPage, WeatherPage].map((Page: FCN<any, any>) => {
   const Wrapped: FCN = ({ children, ...props }) => (
     <Wrapper {...props}>
       <Page {...props}>{children}</Page>
@@ -32,6 +33,7 @@ const Root = createStackNavigator(
   {
     ...CommonPages,
     weather,
+    search,
   },
   {
     initialRouteKey: 'weather',

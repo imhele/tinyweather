@@ -1,9 +1,10 @@
 import { Color, PX } from '@/config';
 import { HoverScale, PageContainer, ScaleView } from '@/components/Animation';
+import Hooks from '@/components/Hooks';
 import Icon from '@/components/Icon';
 import intl, { getLocale } from '@/components/intl';
-import connect, { dispatch } from '@/models';
-import { WeatherState } from '@/models/weather';
+import connect, { dispatch, $STATE } from '@/models';
+import { City as CityModel, WeatherState } from '@/models/weather';
 import { useChange } from '@/utils/hooks';
 import { FCN } from '@/utils/types';
 import Modal from '@ant-design/react-native/es/modal';
@@ -26,6 +27,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import City, { styles as cityStyles } from './city';
+import { push } from '@/layouts/Routes';
 
 interface SwiperProps extends ScrollViewProps {
   onChangePage?: (index: number) => void;
@@ -81,6 +83,16 @@ const createAnimate = () => {
 
 const onAddCity = (citiesNum: number) => {
   if (citiesNum > 5) return Toast.info(intl.U('最多城市数量', { num: 6 }));
+  push('search');
+};
+const onDltCity = (cities: CityModel[], index: number) => {
+  if (cities.length < 2) return Toast.info(intl.U('最少城市数量'));
+  const city = cities[index];
+  const cityName = getLocale() === 'zh-CN' ? city.county : city.en;
+  Modal.alert(intl.U('确认'), intl.U('确认删除城市', { cityName }), [
+    { text: intl.U('取消') },
+    { text: intl.U('确认'), onPress: () => dispatch.weather.deleteCity(index) },
+  ]);
 };
 
 interface WeatherProps {
@@ -102,18 +114,22 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
   };
   const onChangePage = (index: number) => {
     pageIndex.current = index;
-    if (!weatherData[pageIndex.current]) onRefresh();
+    if (cities[pageIndex.current] && !weatherData[pageIndex.current]) onRefresh();
   };
   const onRefresh = async () => {
     if (loading) return;
     setLoading(true);
-    await dispatch.weather.fetchWeather(pageIndex.current);
+    if (collapsed) {
+      await dispatch.weather.batchFetchWeather(cities.map((_, i) => i));
+    } else {
+      await dispatch.weather.fetchWeather(pageIndex.current);
+    }
     setLoading(false);
   };
   const onOpenCity = (event: GestureResponderEvent) => {
     if (!collapsed || editing) return;
     const { locationY } = event.nativeEvent;
-    const index = Math.floor((locationY - 64) / 120);
+    const index = Math.floor(locationY / 120);
     if (index >= cities.length) return;
     setCollapsed(false);
     if (!swiperRef.current) return;
@@ -131,7 +147,14 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     setLoading(false);
   };
 
-  useState(() => onChangePage(0));
+  useState(() => {
+    onChangePage(0);
+    Hooks.afterAddCity(() => {
+      setLoading(true);
+      setCollapsed(false);
+      dispatch.weather.fetchWeather(0).then(() => setLoading(false));
+    });
+  });
 
   if (useChange(collapsed)) {
     LayoutAnimation.spring();
@@ -165,20 +188,15 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
     </Fragment>
   );
 
-  const swiperMinHeight = Math.max(PX.Device.HeightNS, cities.length * 120 + 64);
-  const dltBtnStl = [cityStyles.btnWrapper, { right: wingBlank, zIndex: editing ? 1 : -1 }];
-  const onDltCity = (index: number) => {
-    if (cities.length < 2) return Toast.info(intl.U('最少城市数量'));
-    const city = cities[index];
-    const cityName = getLocale() === 'zh-CN' ? city.county : city.en;
-    Modal.alert(intl.U('确认'), intl.U('确认删除城市', { cityName }), [
-      { text: intl.U('取消') },
-      { text: intl.U('确认'), onPress: () => dispatch.weather.deleteCity(index) },
-    ]);
-  };
+  const swiperMinHeight = Math.max(PX.Device.HeightNS, collapsed ? cities.length * 120 + 64 : 0);
+  const dltBtnStl = [cityStyles.btnWrapper, { left: wingBlank, zIndex: editing ? 1 : -1 }];
   const DeleteButton = cities.map((city, i) => (
-    <ScaleView key={city.id} visible={editing} style={[dltBtnStl, { top: i * 120 + 98 }]}>
-      <HoverScale opacity={hoverOpc} onPress={() => onDltCity(i)} style={cityStyles.btnContainer}>
+    <ScaleView key={`${city.id}${i}`} visible={editing} style={[dltBtnStl, { top: i * 120 + 98 }]}>
+      <HoverScale
+        opacity={hoverOpc}
+        style={cityStyles.btnContainer}
+        onPress={() => onDltCity(cities, i)}
+      >
         <Text style={[cityStyles.btnText, { color: Color.B0 }]}>{intl.U('删除')}</Text>
       </HoverScale>
     </ScaleView>
@@ -192,15 +210,15 @@ const Weather: FCN<WeatherProps> = ({ weather: { cities, weatherData }, wingBlan
         onChangePage={onChangePage}
         scrollEnabled={!collapsed}
         scrollRef={instance => (swiperRef.current = instance)}
-        style={{ minHeight: swiperMinHeight, right: editing ? wingBlank * 2 + 60 : 0 }}
+        style={{ minHeight: swiperMinHeight, left: editing ? wingBlank * 2 + 60 : 0 }}
       >
         {cities.map((city, index) => (
           <City
             city={city}
-            key={city.id}
             index={index}
             collapsed={collapsed}
             onClickCity={onClickCity}
+            key={`${city.id}${index}`}
             weather={weatherData[index]}
             cityNameStyle={animate.cityName}
           />

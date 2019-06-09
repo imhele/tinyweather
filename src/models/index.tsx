@@ -1,11 +1,25 @@
 import { wrap } from '@/components/Wrapper';
 import { AnyComponentClass, Omit, PowerPartial } from '@/utils/types';
-import merge from 'lodash/merge';
 import throttle from 'lodash/throttle';
 import React, { createContext, Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import global from './global';
 import home from './home';
 import weather from './weather';
+
+const merge = <TObject, TSource>(
+  object: TObject = {} as any,
+  source: TSource = {} as any,
+): TObject & TSource => {
+  let [obj, src]: [any, any] = [object, source];
+  if (obj === null) obj = {};
+  if (src === null) src = {};
+  Object.keys(src).forEach(key => {
+    if (typeof src[key] !== 'object') obj[key] = src[key];
+    else if (Array.isArray(src[key])) obj[key] = src[key];
+    else merge(obj[key], src[key]);
+  });
+  return obj;
+};
 
 /**
  ** *****

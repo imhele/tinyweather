@@ -2,8 +2,9 @@ import { City, getWeather, searchCity, Weather } from '@/services/weather';
 import { PowerPartial } from '@/utils/types';
 import throttle from 'lodash/throttle';
 import { AsyncStorage, LayoutAnimation } from 'react-native';
-import { setState } from './index';
+import { setState, $STATE } from './index';
 
+export { City, Weather };
 export interface WeatherState {
   cities: City[];
   searchRes: City[];
@@ -46,20 +47,22 @@ const bacthFetchWeather = async (
 
 const deleteCity = async (index: number, state?: any) => {
   const weather: WeatherState = state.weather;
-  const { cities } = weather;
+  const { cities, weatherData } = weather;
   cities.splice(index, 1);
-  persist({ cities }, weather);
+  weatherData.splice(index, 1);
+  persist({ cities, weatherData }, weather);
   LayoutAnimation.spring();
-  return { cities: [...cities] };
+  return { cities: [...cities], weatherData: [...weatherData] };
 };
 
-const addCity = (index: number, state: any) => {
+const addCity = async (index: number, state?: any) => {
   const weather: WeatherState = state.weather;
   if (!weather.searchRes[index]) return null;
-  const cities = weather.cities.concat(weather.searchRes[index]);
-  persist({ cities }, weather);
+  const cities = [weather.searchRes[index], ...weather.cities];
+  const weatherData = [, ...weather.weatherData];
+  persist({ cities, weatherData }, weather);
   LayoutAnimation.spring();
-  return { searchRes: [], cities };
+  return { searchRes: [], cities, weatherData };
 };
 
 const defaultCity = {
@@ -80,19 +83,25 @@ AsyncStorage.getItem('Weather', (err, res) => {
     AsyncStorage.setItem('Weather', JSON.stringify({ cities: [defaultCity] }));
   }
   LayoutAnimation.spring();
+  bacthFetchWeather($STATE.weather.cities.map((_, i) => i), $STATE);
 });
 
 const WeatherModel = {
   state: {
-    searchRes: [],
+    searchRes: [defaultCity],
     cities: [],
     weatherData: [],
   } as WeatherState,
   reducers: {
     addCity,
     deleteCity,
-    fetchWeather: throttle(fetchWeather, 100),
-    batchFetchWeather: throttle(bacthFetchWeather, 100),
+    fetchWeather: throttle(fetchWeather, 100, { leading: true }),
+    batchFetchWeather: throttle(bacthFetchWeather, 100, { leading: true }),
+    searchCity: throttle(async (search: string) => {
+      if (!search) return { searchRes: [] };
+      const searchRes = searchCity(search);
+      return { searchRes };
+    }, 200),
   },
 };
 

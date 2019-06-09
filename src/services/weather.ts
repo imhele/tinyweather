@@ -1,6 +1,8 @@
 import intl from '@/components/intl';
 import config from '@/config';
 import Toast from '@ant-design/react-native/es/toast';
+// import throttle from 'lodash/throttle';
+import Cities from './cities';
 
 export interface City {
   id: number;
@@ -10,12 +12,28 @@ export interface City {
   en: string;
 }
 
-export async function searchCity(id: number) {
-  return fetch(`${config.ApiPrefix}/weather/city/${id}`, { method: 'POST' })
-    .then(resp => resp.json())
-    .catch(() => Toast.offline(intl('网络请求失败')) && null)
-    .then(res => res || []) as Promise<City[]>;
-}
+// export const searchCity = throttle((search: string) => {
+//   return fetch(`${config.ApiPrefix}/weather/city/${search}`, { method: 'POST' })
+//     .then(resp => resp.json())
+//     .catch(() => Toast.offline(intl('网络请求失败')) && null)
+//     .then(res => res || []) as Promise<City[]>;
+// }, 2000);
+
+export const searchCity = (search: string) => {
+  const result: City[] = [];
+  for (const city of Cities) {
+    if (!(city as string[])[5].includes(search)) continue;
+    result.push({
+      id: city[0],
+      province: city[1],
+      city: city[2],
+      county: city[3],
+      en: city[4],
+    } as City);
+    if (result.length > 10) break;
+  }
+  return result;
+};
 
 export interface Forecast {
   /**

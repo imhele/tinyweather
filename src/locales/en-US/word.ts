@@ -18,6 +18,7 @@ const enUS: typeof zhCN = {
   取消: 'cancel',
   确认: 'confirm',
   提示: 'tip',
+  返回: 'back',
 };
 
 export default enUS;
